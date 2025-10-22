@@ -1,0 +1,32 @@
+{
+  "name": "workigom",
+  "version": "1.0.0",
+  "description": "Workigom - Mobil öncelikli iş pazarı uygulaması",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "lucide-react": "latest",
+    "sonner": "^2.0.3",
+    "react-hook-form": "^7.55.0",
+    "motion": "latest",
+    "recharts": "latest",
+    "react-slick": "latest",
+    "react-responsive-masonry": "latest",
+    "react-dnd": "latest",
+    "react-dnd-html5-backend": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.11",
+    "tailwindcss": "^4.0.0"
+  }
+}
