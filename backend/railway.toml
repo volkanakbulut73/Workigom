@@ -1,7 +1,11 @@
 
+# Railway Backend Configuration
+# Bu dosya backend'in doğru şekilde deploy edilmesi için gerekli ayarları içerir
+
 [build]
 builder = "dockerfile"
 dockerfilePath = "Dockerfile"
+# Root directory backend olarak ayarlanmalı
 
 [deploy]
 startCommand = "node dist/server.js"
@@ -9,3 +13,9 @@ healthcheckPath = "/api/health"
 healthcheckTimeout = 100
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
+
+# Environment Variables (Railway Dashboard'da ayarlanmalı):
+# - DATABASE_URL
+# - JWT_SECRET
+# - PORT (default: 3001)
+# - NODE_ENV (production)
