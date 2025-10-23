@@ -1,0 +1,77 @@
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: workigom-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: workigom_user
+      POSTGRES_PASSWORD: workigom_password
+      POSTGRES_DB: workigom_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - workigom-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U workigom_user -d workigom_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: workigom-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DATABASE_URL: postgresql://workigom_user:workigom_password@postgres:5432/workigom_db?schema=public
+      JWT_SECRET: ${JWT_SECRET:-workigom_super_secret_jwt_key_2024}
+      JWT_EXPIRES_IN: 7d
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-workigom_super_secret_refresh_jwt_key_2024}
+      JWT_REFRESH_EXPIRES_IN: 30d
+      CORS_ORIGIN: http://localhost:5173
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./backend/uploads:/app/uploads
+    networks:
+      - workigom-network
+    command: >
+      sh -c "
+        npx prisma migrate deploy &&
+        npx prisma db seed &&
+        node dist/server.js
+      "
+
+  # Frontend (Optional - for production)
+  # frontend:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: workigom-frontend
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - workigom-network
+
+volumes:
+  postgres_data:
+
+networks:
+  workigom-network:
+    driver: bridge
