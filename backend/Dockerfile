@@ -6,17 +6,17 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Cache bust to force rebuild - update this value to invalidate cache
-ARG CACHE_BUST=202510232300
+ARG CACHE_BUST=202510232303
 
 # Copy package files
-COPY package*.json ./
-COPY prisma ./prisma/
+COPY backend/package*.json ./
+COPY backend/prisma ./prisma/
 
 # Install dependencies
 RUN npm ci
 
 # Copy source code
-COPY . .
+COPY backend/ .
 
 # Generate Prisma client
 RUN npm run prisma:generate
@@ -30,7 +30,7 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Install production dependencies only
-COPY package*.json ./
+COPY backend/package*.json ./
 RUN npm ci --only=production
 
 # Copy Prisma schema and generate client
