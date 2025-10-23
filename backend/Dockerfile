@@ -5,6 +5,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Cache bust to force rebuild - update this value to invalidate cache
+ARG CACHE_BUST=202510232300
+
 # Copy package files
 COPY package*.json ./
 COPY prisma ./prisma/
