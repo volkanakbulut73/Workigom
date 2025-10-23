@@ -1,29 +1,24 @@
-# ⚠️ CRITICAL: Railway Backend Configuration
-# 
-# IMPORTANT: Railway Dashboard Settings Required:
-# 1. Set "Root Directory" to: backend
-# 2. Set "Builder" to: Dockerfile
-# 
-# Without setting the Root Directory to "backend", Railway will use the 
-# wrong Dockerfile (frontend) and deployment will fail!
+# Railway Configuration for Backend Service
+# This file forces Railway to use the correct Dockerfile and settings
+# It overrides any dashboard configuration
 
 [build]
+# Use the Dockerfile in THIS directory (backend/)
 builder = "dockerfile"
 dockerfilePath = "Dockerfile"
-watchPatterns = ["src/**", "prisma/**", "package.json"]
 
 [deploy]
+# Set the start command (optional, Dockerfile CMD will be used)
 startCommand = "/app/start.sh"
-healthcheckPath = "/api/health"
-healthcheckTimeout = 100
-restartPolicyType = "ON_FAILURE"
+
+# Set the port the backend listens on
+restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
 
-# Environment Variables (Must be set in Railway Dashboard):
-# Required:
-# - DATABASE_URL: PostgreSQL connection string (example: postgresql://user:password@host:5432/database)
-# - JWT_SECRET: Secret key for JWT tokens (generate with: openssl rand -base64 32)
-# 
-# Optional (with defaults):
-# - PORT: Server port (default: 3001)
-# - NODE_ENV: Environment (default: production)
+# Health check configuration
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
+
+[environments]
+[environments.production]
+# Production-specific settings

@@ -1,3 +1,4 @@
+# 🎯 WORKIGOM BACKEND DOCKERFILE - If you see this in Railway logs, the correct Dockerfile is being used! 🎯
 
 # Build stage
 FROM node:20-alpine AS builder
