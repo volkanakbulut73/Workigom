@@ -47,6 +47,6 @@ uploads/avatars/*
 !uploads/avatars/.gitkeep
 
 # Prisma
-prisma/migrations/
-
+# Note: migrations/ should be committed to version control
+# Only ignore generated client files
 /src/generated/prisma
