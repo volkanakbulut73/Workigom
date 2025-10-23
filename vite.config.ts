@@ -59,9 +59,7 @@
       host: '0.0.0.0',
       strictPort: false,
       open: false,
-      hmr: {
-        clientPort: 443,
-        protocol: 'wss',
-      },
+      hmr: false,
+      allowedHosts: ['*'],
     },
   });

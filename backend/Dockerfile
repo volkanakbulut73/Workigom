@@ -35,7 +35,6 @@ RUN npm run prisma:generate
 
 # Copy built files
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/uploads ./uploads
 
 # Create uploads directories
 RUN mkdir -p uploads/resumes uploads/avatars
@@ -47,5 +46,13 @@ EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
   CMD node -e "require('http').get('http://localhost:3001/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
+# Create startup script
+RUN echo '#!/bin/sh\n\
+echo "🚀 Starting Workigom Backend..."\n\
+echo "📦 Running Prisma migrations..."\n\
+npx prisma migrate deploy || echo "⚠️  Migration failed or no migrations to run"\n\
+echo "✅ Starting server..."\n\
+exec node dist/server.js' > /app/start.sh && chmod +x /app/start.sh
+
 # Start the application
-CMD ["node", "dist/server.js"]
+CMD ["/app/start.sh"]

@@ -1,0 +1,37 @@
+# Railway Ignore File
+# This file tells Railway which files to ignore during deployment
+
+# Development files
+*.log
+*.md
+*.pdf
+.env.example
+.gitignore
+
+# Documentation
+DEVELOPMENT_STATUS.md
+DEVELOPMENT_STATUS.pdf
+QUICK_START.md
+QUICK_START.pdf
+README.md
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Frontend files (if deploying backend)
+# Uncomment these if deploying only backend
+# node_modules
+# src/
+# public/
+# package.json
+# package-lock.json
+# vite.config.ts
+# tsconfig.json
+# index.html
