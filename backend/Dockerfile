@@ -5,15 +5,15 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files (from backend/ since build context is at project root)
-COPY backend/package*.json ./
-COPY backend/prisma ./prisma/
+# Copy package files
+COPY package*.json ./
+COPY prisma ./prisma/
 
 # Install dependencies
 RUN npm ci
 
-# Copy source code (from backend/ since build context is at project root)
-COPY backend/ .
+# Copy source code
+COPY . .
 
 # Generate Prisma client
 RUN npm run prisma:generate
@@ -26,8 +26,8 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install production dependencies only (from backend/ since build context is at project root)
-COPY backend/package*.json ./
+# Install production dependencies only
+COPY package*.json ./
 RUN npm ci --only=production
 
 # Copy Prisma schema and generate client
