@@ -18,7 +18,7 @@ import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 const app: Application = express();
 
 // Trust proxy for rate limiting and X-Forwarded-For headers
-app.set('trust proxy', true);
+app.set('trust proxy', 1);
 
 // Security middleware
 app.use(helmet());
