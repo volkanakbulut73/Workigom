@@ -6,7 +6,7 @@ FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Cache bust to force rebuild - update this value to invalidate cache
-ARG CACHE_BUST=202510232325
+ARG CACHE_BUST=202510242120
 
 # Copy package files
 COPY package*.json ./
