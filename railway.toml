@@ -9,7 +9,8 @@ builder = "dockerfile"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-# Backend listens on port 3001
+# Railway automatically sets the PORT environment variable
+# The app listens on process.env.PORT (see src/server.ts)
 startCommand = "/app/start.sh"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10

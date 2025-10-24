@@ -6,12 +6,34 @@ import applicationRoutes from './application.routes';
 import donationRoutes from './donation.routes';
 import messageRoutes from './message.routes';
 import notificationRoutes from './notification.routes';
+import prisma from '../config/database';
 
 const router = Router();
 
-// Health check
-router.get('/health', (_req, res) => {
-  res.json({ success: true, message: 'Workigom API is running' });
+// Health check - Enhanced to check database connectivity
+router.get('/health', async (_req, res) => {
+  try {
+    // Quick database connectivity check
+    await prisma.$queryRaw`SELECT 1`;
+    
+    res.status(200).json({ 
+      success: true, 
+      message: 'Workigom API is running',
+      timestamp: new Date().toISOString(),
+      database: 'connected'
+    });
+  } catch (error) {
+    // Return 200 even if DB is down, but indicate the issue
+    // Railway health checks should pass even if DB is temporarily unavailable
+    console.error('Health check warning: Database not connected:', error);
+    res.status(200).json({ 
+      success: true, 
+      message: 'Workigom API is running',
+      timestamp: new Date().toISOString(),
+      database: 'disconnected',
+      warning: 'Database connection issue'
+    });
+  }
 });
 
 // API routes
