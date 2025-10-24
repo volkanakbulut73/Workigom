@@ -7,6 +7,8 @@
 builder = "dockerfile"
 # Dockerfile is in the root directory
 dockerfilePath = "Dockerfile"
+# Root directory is the project root (not backend/)
+root = "."
 
 [deploy]
 # Railway automatically sets the PORT environment variable
