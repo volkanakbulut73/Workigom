@@ -2,11 +2,29 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { toast } from 'sonner';
 
-const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001/api';
+// Construct API URL - handle both with and without /api suffix
+const getApiUrl = () => {
+  const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+  const baseUrl = backendUrl.endsWith('/api') ? backendUrl : `${backendUrl}/api`;
+  
+  // Debug logging in development
+  if (import.meta.env.DEV) {
+    console.log('🔧 API Configuration:', {
+      VITE_BACKEND_URL: import.meta.env.VITE_BACKEND_URL,
+      finalApiUrl: baseUrl,
+      mode: import.meta.env.MODE
+    });
+  }
+  
+  return baseUrl;
+};
+
+const API_URL = getApiUrl();
 
 // Create axios instance
 const api: AxiosInstance = axios.create({
   baseURL: API_URL,
+  withCredentials: true, // Send cookies with requests
   headers: {
     'Content-Type': 'application/json',
   },
