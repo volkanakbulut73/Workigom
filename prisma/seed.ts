@@ -83,6 +83,52 @@ async function main() {
   });
   console.log('✅ Individual user 2 created:', individual2.email);
 
+  // Create additional test users for easy testing
+  const testPassword = await bcrypt.hash('Test123!', 10);
+  const testUser = await prisma.user.upsert({
+    where: { email: 'test@example.com' },
+    update: {},
+    create: {
+      email: 'test@example.com',
+      password: testPassword,
+      name: 'Test User',
+      phone: '+90 555 555 5555',
+      role: UserRole.INDIVIDUAL,
+      isVerified: true,
+    },
+  });
+  console.log('✅ Test user created:', testUser.email);
+
+  const donorPassword = await bcrypt.hash('Donor123!', 10);
+  const donorUser = await prisma.user.upsert({
+    where: { email: 'donor@example.com' },
+    update: {},
+    create: {
+      email: 'donor@example.com',
+      password: donorPassword,
+      name: 'Donor User',
+      phone: '+90 555 666 6666',
+      role: UserRole.CORPORATE,
+      isVerified: true,
+    },
+  });
+  console.log('✅ Donor user created:', donorUser.email);
+
+  const seekerPassword = await bcrypt.hash('Seeker123!', 10);
+  const seekerUser = await prisma.user.upsert({
+    where: { email: 'seeker@example.com' },
+    update: {},
+    create: {
+      email: 'seeker@example.com',
+      password: seekerPassword,
+      name: 'Job Seeker',
+      phone: '+90 555 777 7777',
+      role: UserRole.INDIVIDUAL,
+      isVerified: true,
+    },
+  });
+  console.log('✅ Seeker user created:', seekerUser.email);
+
   // Create Jobs
   const job1 = await prisma.job.create({
     data: {
