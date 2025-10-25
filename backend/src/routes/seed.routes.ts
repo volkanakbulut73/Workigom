@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { runSeed, seedHealthCheck } from '../controllers/seed.controller';
+import { runSeed, seedHealthCheck, seedInfo } from '../controllers/seed.controller';
 
 const router = Router();
 
@@ -9,6 +9,13 @@ const router = Router();
  * @access  Public
  */
 router.get('/health', seedHealthCheck);
+
+/**
+ * @route   GET /api/seed/run
+ * @desc    Get information about the seed endpoint (method not allowed)
+ * @access  Public
+ */
+router.get('/run', seedInfo);
 
 /**
  * @route   POST /api/seed/run

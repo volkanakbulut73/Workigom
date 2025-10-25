@@ -100,3 +100,26 @@ export const seedHealthCheck = async (req: Request, res: Response) => {
     timestamp: new Date().toISOString()
   });
 };
+
+/**
+ * Information endpoint for /run route
+ * Helps users understand how to use the seed endpoint
+ */
+export const seedInfo = async (req: Request, res: Response) => {
+  return res.status(405).json({
+    success: false,
+    message: 'Method Not Allowed',
+    error: 'GET method is not supported for this endpoint',
+    usage: {
+      method: 'POST',
+      endpoint: '/api/seed/run',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-seed-secret': 'your_seed_secret_here'
+      },
+      description: 'This endpoint seeds the database with test data (users, jobs, donations)',
+      example: 'curl -X POST https://workigom-backend.onrender.com/api/seed/run -H "x-seed-secret: your_secret"'
+    },
+    note: 'The x-seed-secret must match the SEED_SECRET environment variable'
+  });
+};
