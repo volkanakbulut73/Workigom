@@ -92,6 +92,7 @@ app.get('/', (req, res) => {
       donations: '/api/donations',
       messages: '/api/messages',
       notifications: '/api/notifications',
+      seed: '/api/seed (requires authentication)',
     }
   });
 });
