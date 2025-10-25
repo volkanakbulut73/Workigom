@@ -28,6 +28,7 @@ const allowedOrigins = [
   'http://localhost:5173',
   'https://workigom.vercel.app',
   'https://workigom-frontend.vercel.app',
+  'https://workigom-frontend1.onrender.com', // Render frontend
   process.env.CORS_ORIGIN
 ].filter(Boolean); // Remove undefined/null values
 
