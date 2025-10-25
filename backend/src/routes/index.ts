@@ -7,6 +7,7 @@ import donationRoutes from './donation.routes';
 import messageRoutes from './message.routes';
 import notificationRoutes from './notification.routes';
 import seedRoutes from './seed.routes';
+import adminRoutes from './admin.routes';
 import prisma from '../config/database';
 
 const router = Router();
@@ -46,5 +47,6 @@ router.use('/donations', donationRoutes);
 router.use('/messages', messageRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/seed', seedRoutes);
+router.use('/admin', adminRoutes);
 
 export default router;
