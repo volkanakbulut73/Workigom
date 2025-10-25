@@ -27,6 +27,7 @@ app.use(helmet());
 const allowedOrigins = [
   'http://localhost:5173',
   'https://workigom.vercel.app',
+  'https://workigom-frontend.vercel.app',
   process.env.CORS_ORIGIN
 ].filter(Boolean); // Remove undefined/null values
 
