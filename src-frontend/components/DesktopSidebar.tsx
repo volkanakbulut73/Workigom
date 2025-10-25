@@ -2,7 +2,7 @@ import { Home, Briefcase, ListOrdered, User, Plus, FileText, Users as UsersIcon,
 import { Button } from "./ui/button";
 import { cn } from "./ui/utils";
 import { WorkigomLogo } from "./WorkigomLogo";
-import workigomLogoImage from "figma:asset/e0482a8e2019f84501f14a5ddb43fcc0487cdc5d.png";
+import workigomLogoImage from "../assets/e0482a8e2019f84501f14a5ddb43fcc0487cdc5d.png";
 
 interface DesktopSidebarProps {
   activeTab: string;

@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Clock, MapPin, DollarSign, ArrowLeft, Users, Calendar, CheckCircle2 } from "lucide-react";
 import { mockJobs, Job, JobApplication } from "../../lib/mockData";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 interface JobDetailPageProps {
   jobId: string;

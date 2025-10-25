@@ -7,7 +7,7 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { User, Mail, Phone, MapPin, Edit, Star, Award, TrendingUp, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 interface ProfilePageProps {
   onNavigate: (page: string) => void;

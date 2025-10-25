@@ -58,7 +58,7 @@ export function GelenPersonellerPage({ onNavigate }: GelenPersonellerPageProps) 
 
   // Ay listesi oluştur (son 12 ay)
   const getMonthOptions = () => {
-    const options = [];
+    const options: { value: string; label: string }[] = [];
     const currentDate = new Date();
     
     for (let i = 0; i < 12; i++) {

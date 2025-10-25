@@ -11,7 +11,7 @@ export const ProfileImageUpload: React.FC = () => {
   const handleImageUpload = async (file: File) => {
     try {
       toast.loading('Profil fotoğrafı yükleniyor...');
-      const updatedUser = await usersAPI.uploadProfileImage(file);
+      const updatedUser = await usersAPI.uploadAvatar(file);
       updateUser(updatedUser);
       toast.dismiss();
       toast.success('Profil fotoğrafı güncellendi');
@@ -32,7 +32,7 @@ export const ProfileImageUpload: React.FC = () => {
         accept="image/*"
         maxSize={2}
         label="Fotoğraf yüklemek için tıklayın"
-        currentFile={user?.profileImage}
+        currentFile={user?.avatar}
         preview={true}
       />
     </div>

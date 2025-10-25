@@ -4,7 +4,7 @@ import { Card } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { ArrowLeft, User, Phone, Mail, Calendar, Clock, DollarSign, Briefcase, MapPin, CheckCircle, Building2 } from "lucide-react";
 import { AssignedPersonnel } from "../../lib/mockData";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 interface AssignedPersonnelDetailProps {
   personnelId: string;

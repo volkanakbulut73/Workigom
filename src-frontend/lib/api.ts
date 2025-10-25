@@ -32,24 +32,24 @@ const api: AxiosInstance = axios.create({
 
 // Request interceptor - Add auth token to requests
 api.interceptors.request.use(
-  (config) => {
+  (config: any) => {
     const token = localStorage.getItem('authToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
+  (error: any) => {
     return Promise.reject(error);
   }
 );
 
 // Response interceptor - Handle errors globally
 api.interceptors.response.use(
-  (response) => {
+  (response: any) => {
     return response;
   },
-  (error: AxiosError<any>) => {
+  (error: any) => {
     // Handle different error types
     if (error.response) {
       // Server responded with error

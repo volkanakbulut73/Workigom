@@ -3,7 +3,7 @@ import { Card } from "./ui/card";
 import { Heart, Briefcase, Users, Sparkles, TrendingUp, Gift, Coffee, HandHeart, CircleDollarSign } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { WorkigomLogo } from "./WorkigomLogo";
-import workigomLogoImage from "figma:asset/e0482a8e2019f84501f14a5ddb43fcc0487cdc5d.png";
+import workigomLogoImage from "../assets/e0482a8e2019f84501f14a5ddb43fcc0487cdc5d.png";
 
 interface LandingPageProps {
   onGetStarted: () => void;

@@ -3,7 +3,7 @@ import { Card } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 import { ArrowLeft, Star, Briefcase, Mail, Phone } from "lucide-react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 interface ViewApplicationsPageProps {
   onNavigate: (page: string) => void;

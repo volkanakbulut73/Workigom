@@ -7,7 +7,7 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { ArrowLeft, Heart, Clock, CheckCircle, DollarSign, AlertCircle, Image as ImageIcon, Check } from "lucide-react";
 import { FoodDonationRequest } from "../../lib/mockData";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 interface FindSupportPageProps {
   onNavigate: (page: string) => void;

@@ -6,7 +6,7 @@ import { Textarea } from "../ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { 
   LayoutDashboard, 
   Briefcase, 
@@ -83,7 +83,7 @@ function CompanyDashboardView({ companyId, companyName }: { companyId: string, c
 
   // Ay listesi oluştur (son 12 ay)
   const getMonthOptions = () => {
-    const options = [];
+    const options: { value: string; label: string }[] = [];
     const currentDate = new Date();
     
     for (let i = 0; i < 12; i++) {
