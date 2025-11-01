@@ -29,18 +29,26 @@ const allowedOrigins = [
   'https://workigom.vercel.app',
   'https://workigom-frontend.vercel.app',
   'https://workigom-frontend1.onrender.com', // Render frontend
-  process.env.CORS_ORIGIN
+  // Parse comma-separated CORS_ORIGIN env variable
+  ...(process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim()) : [])
 ].filter(Boolean); // Remove undefined/null values
+
+console.log('🔒 CORS Allowed Origins:', allowedOrigins);
 
 const corsOptions = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    // Allow requests with no origin (like mobile apps, curl, postman)
-    if (!origin) return callback(null, true);
+    // Allow requests with no origin (like mobile apps, curl, postman, Thunder Client)
+    if (!origin) {
+      console.log('✅ CORS: Allowing request with no origin (likely same-origin or API client)');
+      return callback(null, true);
+    }
     
     if (allowedOrigins.indexOf(origin) !== -1) {
+      console.log(`✅ CORS: Allowing origin ${origin}`);
       callback(null, true);
     } else {
-      console.warn(`CORS: Blocked origin ${origin}`);
+      console.warn(`❌ CORS: Blocked origin ${origin}`);
+      console.warn(`   Allowed origins: ${allowedOrigins.join(', ')}`);
       callback(new Error('Not allowed by CORS'));
     }
   },

@@ -1,0 +1,62 @@
+# Render.com Blueprint Configuration
+# This file defines the services for the Workigom application
+
+services:
+  # Backend API Service
+  - type: web
+    name: workigom-backend
+    env: node
+    region: frankfurt
+    plan: free
+    buildCommand: cd backend && npm install && npx prisma generate && npm run build
+    startCommand: cd backend && npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false  # Set this in Render dashboard - your PostgreSQL connection string
+      - key: JWT_SECRET
+        generateValue: true  # Render will generate a secure secret
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 30d
+      - key: CORS_ORIGIN
+        value: https://workigom.vercel.app,https://workigom-frontend1.onrender.com
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 900000
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: 100
+      - key: MAX_FILE_SIZE
+        value: 5242880
+      - key: ALLOWED_FILE_TYPES
+        value: image/jpeg,image/png,image/jpg,application/pdf
+    healthCheckPath: /api/health
+
+  # Frontend Service (Static Site)
+  - type: web
+    name: workigom-frontend
+    env: static
+    region: frankfurt
+    plan: free
+    buildCommand: cd src-frontend && npm install && npm run build && cd .. && mkdir -p dist && cp -r src-frontend/dist/* dist/
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_BACKEND_URL
+        value: https://workigom-backend.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+# Database (PostgreSQL)
+# Note: You need to create this separately in Render dashboard
+# Free PostgreSQL databases are available
+databases:
+  - name: workigom-db
+    databaseName: workigom_db
+    user: workigom_user
+    plan: free
+    region: frankfurt

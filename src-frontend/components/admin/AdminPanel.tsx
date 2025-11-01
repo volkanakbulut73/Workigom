@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { toast } from "sonner";
+import { SendNotificationForm } from "./SendNotificationForm";
 import { 
   LayoutDashboard, 
   Briefcase, 
@@ -938,23 +939,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
           )}
 
           {activePage === 'notifications' && (
-            <>
-              <h1 className="text-3xl font-semibold text-gray-900 mb-8">Bildirimler</h1>
-              <Card className="p-6 bg-white border-0 shadow-sm">
-                <div className="space-y-4">
-                  {[
-                    { message: 'Yeni kullanıcı kaydı: Zeynep Şahin', time: '5 dakika önce', read: false },
-                    { message: 'Yeni iş ilanı yayınlandı: Kargo Dağıtım', time: '1 saat önce', read: false },
-                    { message: 'Ödeme alındı: ABC Ltd. - 500 TL', time: '3 saat önce', read: true },
-                  ].map((notification, index) => (
-                    <div key={index} className={`p-4 border rounded-xl ${notification.read ? 'border-gray-200 bg-white' : 'border-blue-200 bg-blue-50'}`}>
-                      <p className="text-gray-900">{notification.message}</p>
-                      <p className="text-sm text-gray-600 mt-1">{notification.time}</p>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </>
+            <SendNotificationForm />
           )}
 
           {activePage === 'company-accounts' && (
