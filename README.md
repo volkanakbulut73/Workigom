@@ -370,35 +370,102 @@ npm run preview
 
 ## 🚢 Production Deployment
 
-### Environment Variables
+### Render.com Deployment (Recommended) 🌟
 
-Production için `.env` dosyasını güncelleyin:
-```env
-NODE_ENV=production
-DATABASE_URL=postgresql://user:password@host:5432/database
-JWT_SECRET=<güçlü-secret-key>
-JWT_REFRESH_SECRET=<güçlü-refresh-secret>
-CORS_ORIGIN=https://yourdomain.com
+Workigom, Render.com üzerinde hızlı ve kolay bir şekilde deploy edilebilir. Render ücretsiz tier ile hem backend, frontend hem de PostgreSQL veritabanını barındırabilirsiniz.
+
+#### Quick Start with Render Blueprint
+
+1. [Render Dashboard](https://dashboard.render.com/) üzerinde hesap oluşturun
+2. **New +** → **Blueprint** seçin
+3. GitHub repository'sini bağlayın: `volkanakbulut73/workigom`
+4. **Apply** butonuna tıklayın
+5. Deployment tamamlandıktan sonra migrations çalıştırın:
+   ```bash
+   npx prisma migrate deploy
+   ```
+
+#### Detaylı Deployment Rehberleri
+
+- 📘 **[Render Deployment Guide](./RENDER_DEPLOYMENT.md)** - Kapsamlı adım adım rehber
+- 📗 **[Render Quick Reference](./RENDER_QUICK_REFERENCE.md)** - Hızlı başvuru kılavuzu
+
+#### Deployment Script
+
+Manuel build için:
+```bash
+# Backend ve frontend build
+./render-build.sh all
+
+# Sadece backend
+./render-build.sh backend
+
+# Sadece frontend
+./render-build.sh frontend
 ```
 
-### Build & Deploy
+### Railway.app / Vercel Deployment
+
+Railway ve Vercel deployment için mevcut railway.toml ve vercel.json dosyalarını kullanabilirsiniz.
+
+- 📘 **[Railway Deployment Guide](./RAILWAY_DEPLOYMENT.md)**
+- 📘 **[Railway Troubleshooting](./RAILWAY_TROUBLESHOOTING_GUIDE.md)**
+
+### Environment Variables
+
+Production için gerekli environment variables:
+
+**Backend:**
+```env
+NODE_ENV=production
+PORT=10000
+DATABASE_URL=postgresql://user:password@host:5432/database
+JWT_SECRET=<güçlü-secret-key-64-chars>
+JWT_REFRESH_SECRET=<güçlü-refresh-secret-64-chars>
+CORS_ORIGIN=https://your-frontend-url.com
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+```
+
+**Frontend:**
+```env
+VITE_BACKEND_URL=https://your-backend-url.com
+```
+
+Detaylı environment variables için:
+- Backend: `backend/.env.example`
+- Frontend: `src-frontend/.env.example`
+
+### Docker Deployment (Alternative)
+
+Docker ile local veya cloud deployment:
+
+```bash
+# Docker compose ile başlat
+docker-compose up -d
+
+# Logs kontrolü
+docker-compose logs -f
+```
+
+### Manual Build & Deploy
 
 ```bash
 # Backend build
 cd backend
+npm install
+npx prisma generate
 npm run build
 
 # Frontend build
-cd ..
+cd ../src-frontend
+npm install
 npm run build
 
-# Docker ile deploy
-docker-compose up -d
+# Start production server
+cd ../backend
+npm run start
 ```
-
-### Nginx Configuration
-
-Production için nginx.conf dosyasını domain'inize göre güncelleyin.
 
 ## 🔐 Güvenlik
 

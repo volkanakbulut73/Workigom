@@ -1,30 +1,49 @@
+# =====================================
 # Render.com Blueprint Configuration
-# This file defines the services for the Workigom application
+# =====================================
+# This file defines all services for the Workigom application
+# 
+# Services:
+# 1. workigom-backend: Node.js + Express API
+# 2. workigom-frontend: React + Vite Static Site
+# 3. workigom-db: PostgreSQL Database
+#
+# Repository: https://github.com/volkanakbulut73/workigom
 
 services:
+  # =====================================
   # Backend API Service
+  # =====================================
   - type: web
     name: workigom-backend
     env: node
     region: frankfurt
     plan: free
-    buildCommand: cd backend && npm install && npx prisma generate && npm run build
-    startCommand: cd backend && npm run start
+    rootDir: backend
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npm run start
+    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: 10000
       - key: DATABASE_URL
-        sync: false  # Set this in Render dashboard - your PostgreSQL connection string
+        fromDatabase:
+          name: workigom-db
+          property: connectionString
       - key: JWT_SECRET
-        generateValue: true  # Render will generate a secure secret
+        generateValue: true
+        sync: false
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: JWT_REFRESH_SECRET
         generateValue: true
+        sync: false
       - key: JWT_REFRESH_EXPIRES_IN
         value: 30d
       - key: CORS_ORIGIN
-        value: https://workigom.vercel.app,https://workigom-frontend1.onrender.com
+        value: https://workigom-frontend.onrender.com,https://workigom.vercel.app
       - key: RATE_LIMIT_WINDOW_MS
         value: 900000
       - key: RATE_LIMIT_MAX_REQUESTS
@@ -35,14 +54,18 @@ services:
         value: image/jpeg,image/png,image/jpg,application/pdf
     healthCheckPath: /api/health
 
-  # Frontend Service (Static Site)
+  # =====================================
+  # Frontend Static Site Service
+  # =====================================
   - type: web
     name: workigom-frontend
     env: static
     region: frankfurt
     plan: free
-    buildCommand: cd src-frontend && npm install && npm run build && cd .. && mkdir -p dist && cp -r src-frontend/dist/* dist/
+    rootDir: src-frontend
+    buildCommand: npm install && npm run build
     staticPublishPath: ./dist
+    autoDeploy: true
     envVars:
       - key: VITE_BACKEND_URL
         value: https://workigom-backend.onrender.com
@@ -51,12 +74,13 @@ services:
         source: /*
         destination: /index.html
 
+# =====================================
 # Database (PostgreSQL)
-# Note: You need to create this separately in Render dashboard
-# Free PostgreSQL databases are available
+# =====================================
 databases:
   - name: workigom-db
     databaseName: workigom_db
     user: workigom_user
     plan: free
     region: frankfurt
+    ipAllowList: []  # Empty array allows all IPs (required for free tier)
