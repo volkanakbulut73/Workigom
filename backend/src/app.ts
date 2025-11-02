@@ -20,10 +20,9 @@ const app: Application = express();
 // Trust proxy for rate limiting and X-Forwarded-For headers
 app.set('trust proxy', 1);
 
-// Security middleware
-app.use(helmet());
-
-// CORS configuration
+// ============================================
+// CORS configuration - MUST BE FIRST!
+// ============================================
 const allowedOrigins = [
   'http://localhost:5173',
   'https://workigom.vercel.app',
@@ -53,9 +52,24 @@ const corsOptions = {
     }
   },
   credentials: true,
-  optionsSuccessStatus: 200
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  optionsSuccessStatus: 200,
+  preflightContinue: false
 };
+
+// Apply CORS to all routes - BEFORE any other middleware
 app.use(cors(corsOptions));
+
+// Explicit OPTIONS handler for all routes
+app.options('*', cors(corsOptions));
+
+// Security middleware - AFTER CORS
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" }
+}));
 
 // Rate limiting
 const limiter = rateLimit({
