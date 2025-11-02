@@ -19,10 +19,18 @@ export function SendNotificationForm() {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<any[]>([]);
 
+  // Helper variable for conditional rendering
+  const shouldShowUserSelection = targetType === 'SINGLE_INDIVIDUAL' || targetType === 'SINGLE_COMPANY';
+
+  // Debug: Log targetType changes
+  useEffect(() => {
+    console.log('Target type changed to:', targetType, '| Should show user selection:', shouldShowUserSelection);
+  }, [targetType, shouldShowUserSelection]);
+
   // Fetch users for the dropdown when targetType changes
   useEffect(() => {
     const fetchUsers = async () => {
-      if (targetType === 'SINGLE_INDIVIDUAL' || targetType === 'SINGLE_COMPANY') {
+      if (shouldShowUserSelection) {
         try {
           const token = localStorage.getItem('token');
           const response = await axios.get(`${API_BASE_URL}/api/users`, {
@@ -37,15 +45,20 @@ export function SendNotificationForm() {
               : u.role === 'CORPORATE'
           );
           setUsers(filteredUsers);
+          console.log('Fetched users:', filteredUsers.length, 'for type:', targetType);
         } catch (error) {
           console.error('Error fetching users:', error);
           toast.error('Kullanıcılar yüklenirken hata oluştu');
         }
+      } else {
+        // Reset users and targetId when switching to non-individual options
+        setUsers([]);
+        setTargetId('');
       }
     };
 
     fetchUsers();
-  }, [targetType]);
+  }, [targetType, shouldShowUserSelection]);
 
   const handleSend = async () => {
     // Validasyon
@@ -57,7 +70,7 @@ export function SendNotificationForm() {
       toast.error('❌ Lütfen bildirim mesajı girin');
       return;
     }
-    if ((targetType === 'SINGLE_INDIVIDUAL' || targetType === 'SINGLE_COMPANY') && !targetId) {
+    if (shouldShowUserSelection && !targetId) {
       toast.error('❌ Lütfen hedef kullanıcı/şirket seçin');
       return;
     }
@@ -182,8 +195,8 @@ export function SendNotificationForm() {
           </div>
 
           {/* Kullanıcı/Şirket Seçimi */}
-          {(targetType === 'SINGLE_INDIVIDUAL' || targetType === 'SINGLE_COMPANY') && (
-            <div>
+          {shouldShowUserSelection && (
+            <div key={`user-selection-${targetType}`}>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 {targetType === 'SINGLE_INDIVIDUAL' ? 'Kullanıcı Seçin' : 'Şirket Seçin'} <span className="text-red-500">*</span>
               </label>
