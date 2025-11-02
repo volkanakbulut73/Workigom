@@ -32,7 +32,18 @@ export function SendNotificationForm() {
     const fetchUsers = async () => {
       if (shouldShowUserSelection) {
         try {
-          const token = localStorage.getItem('token');
+          // FIX: Use 'authToken' to match the key used by the auth system
+          const token = localStorage.getItem('authToken');
+          
+          // Check if token exists
+          if (!token) {
+            console.error('No authentication token found in localStorage');
+            toast.error('Oturum bulunamadı. Lütfen tekrar giriş yapın.');
+            return;
+          }
+
+          console.log('Fetching users from:', `${API_BASE_URL}/api/users`);
+          
           const response = await axios.get(`${API_BASE_URL}/api/users`, {
             headers: {
               Authorization: `Bearer ${token}`
@@ -46,9 +57,22 @@ export function SendNotificationForm() {
           );
           setUsers(filteredUsers);
           console.log('Fetched users:', filteredUsers.length, 'for type:', targetType);
-        } catch (error) {
+        } catch (error: any) {
           console.error('Error fetching users:', error);
-          toast.error('Kullanıcılar yüklenirken hata oluştu');
+          
+          // Detailed error handling
+          if (error.response?.status === 401) {
+            toast.error('Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.');
+            console.error('Authentication failed - Token may be expired or invalid');
+          } else if (error.response?.status === 403) {
+            toast.error('Bu işlem için yetkiniz yok.');
+          } else if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
+            toast.error('Backend sunucusuna erişilemiyor. Lütfen internet bağlantınızı kontrol edin.');
+            console.error('Network error - Backend URL may be incorrect:', API_BASE_URL);
+          } else {
+            const errorMessage = error.response?.data?.error || 'Kullanıcılar yüklenirken hata oluştu';
+            toast.error(errorMessage);
+          }
         }
       } else {
         // Reset users and targetId when switching to non-individual options
@@ -78,7 +102,8 @@ export function SendNotificationForm() {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('token');
+      // FIX: Use 'authToken' to match the key used by the auth system
+      const token = localStorage.getItem('authToken');
       
       const payload = {
         targetType,
