@@ -1,0 +1,86 @@
+# =====================================
+# Render.com Blueprint Configuration
+# =====================================
+# This file defines all services for the Workigom application
+# 
+# Services:
+# 1. workigom-backend: Node.js + Express API
+# 2. workigom-frontend: React + Vite Static Site
+# 3. workigom-db: PostgreSQL Database
+#
+# Repository: https://github.com/volkanakbulut73/workigom
+
+services:
+  # =====================================
+  # Backend API Service
+  # =====================================
+  - type: web
+    name: workigom-backend
+    env: node
+    region: frankfurt
+    plan: free
+    rootDir: backend
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npm run start
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: workigom-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+        sync: false
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 30d
+      - key: CORS_ORIGIN
+        value: https://workigom-frontend.onrender.com,https://workigom.vercel.app
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 900000
+      - key: RATE_LIMIT_MAX_REQUESTS
+        value: 100
+      - key: MAX_FILE_SIZE
+        value: 5242880
+      - key: ALLOWED_FILE_TYPES
+        value: image/jpeg,image/png,image/jpg,application/pdf
+    healthCheckPath: /api/health
+
+  # =====================================
+  # Frontend Static Site Service
+  # =====================================
+  - type: web
+    name: workigom-frontend
+    env: static
+    region: frankfurt
+    plan: free
+    rootDir: src-frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    autoDeploy: true
+    envVars:
+      - key: VITE_BACKEND_URL
+        value: https://workigom-backend.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+# =====================================
+# Database (PostgreSQL)
+# =====================================
+databases:
+  - name: workigom-db
+    databaseName: workigom_db
+    user: workigom_user
+    plan: free
+    region: frankfurt
+    ipAllowList: []  # Empty array allows all IPs (required for free tier)

@@ -1,0 +1,53 @@
+
+# Render Ignore File
+# Files and directories to ignore during Render deployment
+
+# Documentation
+*.md
+*.pdf
+
+# Development files
+.env.local
+.env.development
+*.log
+
+# Test files
+**/__tests__/
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Backups
+.backup-*
+*.backup
+
+# Railway specific (not needed for Render)
+railway.toml
+railway.json
+.railway/
+
+# Docker (using Render's build system instead)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Temporary files
+tmp/
+temp/
+*.tmp

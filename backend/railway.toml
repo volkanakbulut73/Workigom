@@ -1,0 +1,24 @@
+# Railway Configuration for Backend Service
+# This file forces Railway to use the correct Dockerfile and settings
+# It overrides any dashboard configuration
+
+[build]
+# Use the Dockerfile in THIS directory (backend/)
+builder = "dockerfile"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+# Set the start command (optional, Dockerfile CMD will be used)
+startCommand = "/app/start.sh"
+
+# Set the port the backend listens on
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+# Health check configuration
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
+
+[environments]
+[environments.production]
+# Production-specific settings
