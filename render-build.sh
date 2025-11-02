@@ -31,8 +31,8 @@ build_backend() {
   
   cd backend
   
-  echo "Installing dependencies..."
-  npm install
+  echo "Installing dependencies (including devDependencies)..."
+  npm install --include=dev
   
   echo "Generating Prisma Client..."
   npx prisma generate
