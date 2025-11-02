@@ -1,4 +1,4 @@
-
+import { Request } from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
@@ -16,10 +16,10 @@ const avatarsDir = path.join(uploadsDir, 'avatars');
 
 // Storage configuration for resumes
 const resumeStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (req: Request, file: Express.Multer.File, cb: any) => {
     cb(null, resumesDir);
   },
-  filename: (req, file, cb) => {
+  filename: (req: Request, file: Express.Multer.File, cb: any) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, 'resume-' + uniqueSuffix + path.extname(file.originalname));
   }
@@ -27,10 +27,10 @@ const resumeStorage = multer.diskStorage({
 
 // Storage configuration for avatars
 const avatarStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
+  destination: (req: Request, file: Express.Multer.File, cb: any) => {
     cb(null, avatarsDir);
   },
-  filename: (req, file, cb) => {
+  filename: (req: Request, file: Express.Multer.File, cb: any) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, 'avatar-' + uniqueSuffix + path.extname(file.originalname));
   }
