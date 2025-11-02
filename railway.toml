@@ -1,0 +1,32 @@
+# 🚂 Railway Configuration - Workigom Backend API
+# This configuration ensures Railway uses the correct Dockerfile from the root directory
+# The backend code has been moved to the project root to resolve path issues
+
+[build]
+# Use Dockerfile builder (Railway will look for Dockerfile in the root)
+builder = "dockerfile"
+# Dockerfile is in the root directory
+dockerfilePath = "Dockerfile"
+# Root directory is the project root (not backend/)
+root = "."
+
+[deploy]
+# Railway automatically sets the PORT environment variable
+# The app listens on process.env.PORT (see src/server.ts)
+startCommand = "/app/start.sh"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+# Health check configuration
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
+
+# Watch paths for automatic redeployment
+watchPatterns = [
+    "src/**",
+    "prisma/**",
+    "package.json",
+    "package-lock.json",
+    "tsconfig.json",
+    "Dockerfile"
+]
