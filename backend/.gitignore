@@ -50,3 +50,7 @@ uploads/avatars/*
 # Note: migrations/ should be committed to version control
 # Only ignore generated client files
 /src/generated/prisma
+
+# Compiled JavaScript files in src
+src/**/*.js
+src/**/*.js.map
