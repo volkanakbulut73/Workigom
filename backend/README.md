@@ -35,6 +35,8 @@ npm run dev
 - `npm run prisma:migrate` - Migration çalıştır
 - `npm run prisma:studio` - Prisma Studio GUI
 - `npm run prisma:seed` - Seed data ekle
+- `npm run admin:create` - Admin kullanıcısı oluştur
+- `npm run admin:promote` - Kullanıcıyı admin yap
 
 ## 🔧 Environment Variables
 
@@ -253,8 +255,61 @@ npx prisma migrate status
 tail -f logs/app.log
 ```
 
+## 🔑 Admin User Management
+
+### Default Admin Credentials
+
+```
+Email: admin@workigom.com
+Password: Admin123!
+```
+
+⚠️ **Change password after first login!**
+
+### Creating Admin User
+
+To create the default admin user:
+
+```bash
+npm run admin:create
+```
+
+### Promoting User to Admin
+
+To promote an existing user to admin role:
+
+```bash
+# Interactive mode (lists all users)
+npm run admin:promote
+
+# Direct mode
+npx ts-node scripts/promote-to-admin.ts user@example.com
+```
+
+### Admin Endpoints
+
+These endpoints require ADMIN role:
+- `GET /api/users` - List all users
+- `POST /api/admin/send-notification` - Send notifications
+- `DELETE /api/users/:id` - Delete users
+- `PUT /api/jobs/:id/approve` - Approve jobs
+- `PUT /api/jobs/:id/reject` - Reject jobs
+
+### Troubleshooting 403 Errors
+
+If you get 403 Forbidden errors on admin endpoints:
+
+1. Verify user has ADMIN role in database
+2. Run admin creation script: `npm run admin:create`
+3. Or promote existing user: `npm run admin:promote`
+4. Login again to get new token with ADMIN role
+
+📖 **See [ADMIN_USER_FIX_GUIDE.md](../ADMIN_USER_FIX_GUIDE.md) for detailed instructions**
+
 ## 📚 Resources
 
 - [Express.js Documentation](https://expressjs.com/)
 - [Prisma Documentation](https://www.prisma.io/docs)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [Admin User Fix Guide](../ADMIN_USER_FIX_GUIDE.md)
+- [Admin Quick Reference](../ADMIN_QUICK_REFERENCE.md)

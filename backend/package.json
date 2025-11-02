@@ -11,6 +11,8 @@
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "prisma:seed": "ts-node prisma/seed.ts",
+    "admin:create": "ts-node scripts/create-admin.ts",
+    "admin:promote": "ts-node scripts/promote-to-admin.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
