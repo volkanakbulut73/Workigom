@@ -1,74 +1,68 @@
 import { Request, Response } from 'express';
+import prisma from '../config/database';
 import { hashPassword } from '../utils/password';
 import { sendSuccess, sendError } from '../utils/response';
-import prisma from '../config/database';
 import { UserRole } from '@prisma/client';
 
-// Default admin credentials
+// 🔐 Varsayılan admin bilgileri
 const ADMIN_EMAIL = 'admin@workigom.com';
 const ADMIN_PASSWORD = 'Admin123!';
 const ADMIN_NAME = 'Admin User';
 const ADMIN_PHONE = '+90 555 000 0000';
 
 /**
- * Setup Admin User
+ * 🔧 Admin Kullanıcısı Oluşturma veya Yükseltme
  * 
- * This endpoint creates a default admin user if none exists in the database.
- * Security: Only works if no admin exists (prevents unauthorized admin creation).
+ * Endpoint: POST /api/admin/setup
  * 
- * @route POST /api/admin/setup
- * @access Public (but only works if no admin exists)
+ * - Eğer hiç admin yoksa varsayılan admin oluşturur.
+ * - Eğer admin varsa işlem yapmaz (403 döner).
+ * - Eğer aynı emailde kullanıcı varsa, rolünü admin yapar.
  */
 export const setupAdmin = async (req: Request, res: Response) => {
   try {
-    console.log('🔧 Admin Setup Request received');
+    console.log('🔧 Admin setup isteği alındı');
 
-    // Step 1: Check if any admin exists in the database
+    // 1️⃣ Var olan admin var mı kontrol et
     const existingAdmin = await prisma.user.findFirst({
       where: { role: UserRole.ADMIN }
     });
 
     if (existingAdmin) {
-      console.log('⚠️ Admin already exists, setup not allowed');
+      console.log('⚠️ Admin zaten mevcut, yeni admin oluşturulmadı');
       return sendError(
-        res, 
-        'Admin user already exists. This endpoint can only be used when no admin exists in the system.',
+        res,
+        'Admin zaten mevcut. Bu endpoint yalnızca ilk kurulumda kullanılabilir.',
         403
       );
     }
 
-    // Step 2: Check if the specific admin email exists
+    // 2️⃣ Aynı e-postaya sahip kullanıcı var mı kontrol et
     const existingUser = await prisma.user.findUnique({
       where: { email: ADMIN_EMAIL }
     });
 
+    // 2.a Eğer kullanıcı varsa, rolünü admin yap
     if (existingUser) {
-      // User exists but is not admin, promote them
-      console.log('ℹ️ User exists, promoting to ADMIN');
+      console.log('ℹ️ Kullanıcı bulundu, admin rolüne yükseltiliyor...');
       const updatedUser = await prisma.user.update({
         where: { email: ADMIN_EMAIL },
         data: { role: UserRole.ADMIN },
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-          createdAt: true
-        }
+        select: { id: true, email: true, name: true, role: true, createdAt: true }
       });
 
-      console.log('✅ User promoted to ADMIN successfully');
-      return sendSuccess(res, 'User promoted to admin successfully', {
+      console.log('✅ Kullanıcı admin yapıldı');
+      return sendSuccess(res, 'Kullanıcı admin olarak güncellendi', {
         user: updatedUser,
         credentials: {
           email: ADMIN_EMAIL,
-          password: 'Use your existing password'
+          password: 'Mevcut şifrenizi kullanın'
         }
-      }, 200);
+      });
     }
 
-    // Step 3: Create new admin user
-    console.log('🆕 Creating new admin user');
+    // 3️⃣ Yeni admin oluştur
+    console.log('🆕 Yeni admin oluşturuluyor...');
     const hashedPassword = await hashPassword(ADMIN_PASSWORD);
 
     const admin = await prisma.user.create({
@@ -78,7 +72,7 @@ export const setupAdmin = async (req: Request, res: Response) => {
         name: ADMIN_NAME,
         phone: ADMIN_PHONE,
         role: UserRole.ADMIN,
-        isVerified: true,
+        isVerified: true
       },
       select: {
         id: true,
@@ -89,30 +83,28 @@ export const setupAdmin = async (req: Request, res: Response) => {
       }
     });
 
-    console.log('✅ Admin user created successfully');
-
-    return sendSuccess(res, 'Admin user created successfully', {
+    console.log('✅ Admin başarıyla oluşturuldu');
+    return sendSuccess(res, 'Admin başarıyla oluşturuldu', {
       user: admin,
       credentials: {
         email: ADMIN_EMAIL,
         password: ADMIN_PASSWORD
       },
-      warning: '⚠️ Please change the password after first login!'
+      warning: '⚠️ İlk girişten sonra şifrenizi değiştirin!'
     }, 201);
 
-  } catch (error) {
-    console.error('❌ Error in admin setup:', error);
-    return sendError(res, 'Failed to setup admin user', 500);
+  } catch (error: any) {
+    console.error('❌ Admin setup hatası:', error);
+    return sendError(res, 'Admin setup işlemi başarısız oldu', 500);
   }
 };
 
 /**
- * Check Admin Status
+ * 👀 Admin Durumu Kontrolü
  * 
- * This endpoint checks if an admin user exists in the system.
+ * Endpoint: GET /api/admin/setup/status
  * 
- * @route GET /api/admin/setup/status
- * @access Public
+ * - Admin mevcut mu kontrol eder.
  */
 export const checkAdminStatus = async (req: Request, res: Response) => {
   try {
@@ -127,23 +119,10 @@ export const checkAdminStatus = async (req: Request, res: Response) => {
     });
 
     if (adminExists) {
-      return sendSuccess(res, 'Admin user exists', {
+      return sendSuccess(res, 'Admin mevcut', {
         adminExists: true,
-        admin: {
-          email: adminExists.email,
-          name: adminExists.name,
-          createdAt: adminExists.createdAt
-        }
-      }, 200);
+        admin: adminExists
+      });
     }
 
-    return sendSuccess(res, 'No admin user found', {
-      adminExists: false,
-      message: 'You can create an admin user using POST /api/admin/setup'
-    }, 200);
-
-  } catch (error) {
-    console.error('❌ Error checking admin status:', error);
-    return sendError(res, 'Failed to check admin status', 500);
-  }
-};
+    return send
