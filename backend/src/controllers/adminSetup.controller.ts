@@ -14,10 +14,6 @@ const ADMIN_PHONE = '+90 555 000 0000';
  * 🔧 Admin Kullanıcısı Oluşturma veya Yükseltme
  * 
  * Endpoint: POST /api/admin/setup
- * 
- * - Eğer hiç admin yoksa varsayılan admin oluşturur.
- * - Eğer admin varsa işlem yapmaz (403 döner).
- * - Eğer aynı emailde kullanıcı varsa, rolünü admin yapar.
  */
 export const setupAdmin = async (req: Request, res: Response) => {
   try {
@@ -25,7 +21,7 @@ export const setupAdmin = async (req: Request, res: Response) => {
 
     // 1️⃣ Var olan admin var mı kontrol et
     const existingAdmin = await prisma.user.findFirst({
-      where: { role: UserRole.ADMIN }
+      where: { role: UserRole.ADMIN },
     });
 
     if (existingAdmin) {
@@ -39,16 +35,15 @@ export const setupAdmin = async (req: Request, res: Response) => {
 
     // 2️⃣ Aynı e-postaya sahip kullanıcı var mı kontrol et
     const existingUser = await prisma.user.findUnique({
-      where: { email: ADMIN_EMAIL }
+      where: { email: ADMIN_EMAIL },
     });
 
-    // 2.a Eğer kullanıcı varsa, rolünü admin yap
     if (existingUser) {
       console.log('ℹ️ Kullanıcı bulundu, admin rolüne yükseltiliyor...');
       const updatedUser = await prisma.user.update({
         where: { email: ADMIN_EMAIL },
         data: { role: UserRole.ADMIN },
-        select: { id: true, email: true, name: true, role: true, createdAt: true }
+        select: { id: true, email: true, name: true, role: true, createdAt: true },
       });
 
       console.log('✅ Kullanıcı admin yapıldı');
@@ -56,8 +51,8 @@ export const setupAdmin = async (req: Request, res: Response) => {
         user: updatedUser,
         credentials: {
           email: ADMIN_EMAIL,
-          password: 'Mevcut şifrenizi kullanın'
-        }
+          password: 'Mevcut şifrenizi kullanın',
+        },
       });
     }
 
@@ -72,27 +67,31 @@ export const setupAdmin = async (req: Request, res: Response) => {
         name: ADMIN_NAME,
         phone: ADMIN_PHONE,
         role: UserRole.ADMIN,
-        isVerified: true
+        isVerified: true,
       },
       select: {
         id: true,
         email: true,
         name: true,
         role: true,
-        createdAt: true
-      }
+        createdAt: true,
+      },
     });
 
     console.log('✅ Admin başarıyla oluşturuldu');
-    return sendSuccess(res, 'Admin başarıyla oluşturuldu', {
-      user: admin,
-      credentials: {
-        email: ADMIN_EMAIL,
-        password: ADMIN_PASSWORD
+    return sendSuccess(
+      res,
+      'Admin başarıyla oluşturuldu',
+      {
+        user: admin,
+        credentials: {
+          email: ADMIN_EMAIL,
+          password: ADMIN_PASSWORD,
+        },
+        warning: '⚠️ İlk girişten sonra şifrenizi değiştirin!',
       },
-      warning: '⚠️ İlk girişten sonra şifrenizi değiştirin!'
-    }, 201);
-
+      201
+    );
   } catch (error: any) {
     console.error('❌ Admin setup hatası:', error);
     return sendError(res, 'Admin setup işlemi başarısız oldu', 500);
@@ -103,8 +102,6 @@ export const setupAdmin = async (req: Request, res: Response) => {
  * 👀 Admin Durumu Kontrolü
  * 
  * Endpoint: GET /api/admin/setup/status
- * 
- * - Admin mevcut mu kontrol eder.
  */
 export const checkAdminStatus = async (req: Request, res: Response) => {
   try {
@@ -114,15 +111,23 @@ export const checkAdminStatus = async (req: Request, res: Response) => {
         id: true,
         email: true,
         name: true,
-        createdAt: true
-      }
+        createdAt: true,
+      },
     });
 
     if (adminExists) {
       return sendSuccess(res, 'Admin mevcut', {
         adminExists: true,
-        admin: adminExists
+        admin: adminExists,
       });
     }
 
-    return send
+    return sendSuccess(res, 'Admin bulunamadı', {
+      adminExists: false,
+      message: 'Admin oluşturmak için POST /api/admin/setup kullanın.',
+    });
+  } catch (error: any) {
+    console.error('❌ Admin kontrol hatası:', error);
+    return sendError(res, 'Admin kontrolü başarısız oldu', 500);
+  }
+};
