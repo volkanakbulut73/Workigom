@@ -1,40 +1,49 @@
+import React, { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { supabase } from "../../lib/supabaseClient";
+import { toast } from "sonner";
 
-import React from 'react';
-import { FileUpload } from './FileUpload';
-import { usersAPI } from '../../lib/apiClient';
-import { useAuth } from '../../contexts/AuthContext';
-import { toast } from 'sonner';
-
-export const ProfileImageUpload: React.FC = () => {
+const ProfileImageUpload: React.FC = () => {
   const { user, updateUser } = useAuth();
+  const [uploading, setUploading] = useState(false);
 
-  const handleImageUpload = async (file: File) => {
-    try {
-      toast.loading('Profil fotoğrafı yükleniyor...');
-      const updatedUser = await usersAPI.uploadAvatar(file);
-      updateUser(updatedUser);
-      toast.dismiss();
-      toast.success('Profil fotoğrafı güncellendi');
-    } catch (error) {
-      toast.dismiss();
-      toast.error('Profil fotoğrafı yüklenemedi');
-      console.error('Failed to upload profile image:', error);
+  const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files || event.target.files.length === 0) return;
+
+    const file = event.target.files[0];
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${user?.id}.${fileExt}`;
+    const filePath = `avatars/${fileName}`;
+
+    setUploading(true);
+
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(filePath, file, { upsert: true });
+
+    if (uploadError) {
+      toast.error("Yükleme başarısız: " + uploadError.message);
+      setUploading(false);
+      return;
     }
+
+    const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
+    updateUser({ ...user!, avatar: data.publicUrl });
+
+    toast.success("Profil fotoğrafı güncellendi!");
+    setUploading(false);
   };
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        Profil Fotoğrafı
-      </label>
-      <FileUpload
-        onFileSelect={handleImageUpload}
-        accept="image/*"
-        maxSize={2}
-        label="Fotoğraf yüklemek için tıklayın"
-        currentFile={user?.avatar}
-        preview={true}
+      <img
+        src={user?.avatar || "/placeholder.png"}
+        alt="Profil"
+        className="w-24 h-24 rounded-full"
       />
+      <input type="file" onChange={handleUpload} disabled={uploading} />
     </div>
   );
 };
+
+export default ProfileImageUpload;
