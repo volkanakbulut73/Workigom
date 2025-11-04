@@ -221,7 +221,7 @@ export function SendNotificationForm() {
 
           {/* Kullanıcı/Şirket Seçimi */}
           {shouldShowUserSelection && (
-            <div key={`user-selection-${targetType}`}>
+            <div key={`user-selection-${targetType}`}>  
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 {targetType === 'SINGLE_INDIVIDUAL' ? 'Kullanıcı Seçin' : 'Şirket Seçin'} <span className="text-red-500">*</span>
               </label>
@@ -233,7 +233,7 @@ export function SendNotificationForm() {
                   {users.length > 0 ? (
                     users.map((user: any) => (
                       <SelectItem key={user.id} value={user.id}>
-                        {user.firstName} {user.lastName} ({user.email})
+                        {user.name} ({user.email})
                       </SelectItem>
                     ))
                   ) : (
