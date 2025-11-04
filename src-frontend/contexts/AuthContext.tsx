@@ -1,10 +1,14 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { toast } from "sonner";
 
-interface User {
+export interface User {
   id: string;
   email: string;
+  first_name?: string;
+  last_name?: string;
+  role?: string;      // bireysel, kurumsal, admin
+  avatar?: string;    // profil resmi URL
 }
 
 interface AuthContextType {
@@ -14,6 +18,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  updateUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,20 +29,41 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // ✅ Uygulama ilk açıldığında session kontrolü
   useEffect(() => {
-    const session = supabase.auth.getSession().then(({ data }) => {
-      setUser(data.session?.user ?? null);
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session) {
+        setUser(data.session.user as User);
+        localStorage.setItem("authToken", data.session.access_token);
+        localStorage.setItem("currentUser", JSON.stringify(data.session.user));
+      } else {
+        setUser(null);
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("currentUser");
+      }
       setIsLoading(false);
-    });
+    };
 
-    // ✅ Oturum değişikliklerini dinle
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    checkSession();
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_, session) => {
+      if (session) {
+        setUser(session.user as User);
+        localStorage.setItem("authToken", session.access_token);
+        localStorage.setItem("currentUser", JSON.stringify(session.user));
+      } else {
+        setUser(null);
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("currentUser");
+      }
     });
 
     return () => {
@@ -46,43 +72,56 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
+    setIsLoading(true);
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
-      toast.error(error.message);
+      toast.error("Giriş başarısız: " + error.message);
+      setIsLoading(false);
       return;
     }
-    toast.success("Giriş başarılı!");
-    setUser(data.user);
+    if (data?.session) {
+      setUser(data.session.user as User);
+      localStorage.setItem("authToken", data.session.access_token);
+      localStorage.setItem("currentUser", JSON.stringify(data.session.user));
+      toast.success("Giriş başarılı!");
+    }
+    setIsLoading(false);
   };
 
   const register = async (email: string, password: string) => {
+    setIsLoading(true);
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) {
-      toast.error(error.message);
+      toast.error("Kayıt başarısız: " + error.message);
+      setIsLoading(false);
       return;
     }
-    toast.success("Kayıt başarılı! Lütfen e-postanı doğrula.");
-    setUser(data.user);
+    toast.success("Kayıt başarılı! Lütfen e-postanızı doğrulayın.");
+    setIsLoading(false);
   };
 
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("currentUser");
     toast.success("Çıkış yapıldı");
   };
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
-        login,
-        register,
-        logout,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const updateUser = (updatedUser: User) => {
+    setUser(updatedUser);
+    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+  };
+
+  const value = {
+    user,
+    isAuthenticated: !!user,
+    isLoading,
+    login,
+    register,
+    logout,
+    updateUser,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
