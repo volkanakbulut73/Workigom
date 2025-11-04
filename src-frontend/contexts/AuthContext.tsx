@@ -1,103 +1,75 @@
+// src-frontend/contexts/AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { authAPI } from '../lib/apiClient';
-import { User, LoginRequest, RegisterRequest } from '../types/api';
+import { supabase } from '../lib/supabaseClient';
 import { toast } from 'sonner';
 
 interface AuthContextType {
-  user: User | null;
+  user: any | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (data: LoginRequest) => Promise<void>;
-  register: (data: RegisterRequest) => Promise<void>;
-  logout: () => void;
-  updateUser: (user: User) => void;
+  login: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 };
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check for existing session on mount
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem('authToken');
-        const storedUser = localStorage.getItem('currentUser');
-        
-        if (token && storedUser) {
-          // Try to get current user from API to verify token
-          try {
-            const currentUser = await authAPI.getCurrentUser();
-            setUser(currentUser);
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-          } catch (error) {
-            // Token is invalid, clear storage
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('currentUser');
-            setUser(null);
-          }
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-      } finally {
-        setIsLoading(false);
-      }
+    // Oturum kontrolü
+    const getSession = async () => {
+      const { data } = await supabase.auth.getSession();
+      setUser(data?.session?.user ?? null);
+      setIsLoading(false);
     };
 
-    checkAuth();
+    getSession();
+
+    // Oturum değişikliklerini dinle
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.subscription.unsubscribe();
+    };
   }, []);
 
-  const login = async (data: LoginRequest) => {
-    try {
-      setIsLoading(true);
-      const response = await authAPI.login(data);
-      setUser(response.user);
+  const login = async (email: string, password: string) => {
+    setIsLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      toast.error(error.message);
+    } else {
       toast.success('Giriş başarılı!');
-    } catch (error: any) {
-      console.error('Login failed:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
-  const register = async (data: RegisterRequest) => {
-    try {
-      setIsLoading(true);
-      const response = await authAPI.register(data);
-      setUser(response.user);
-      toast.success('Kayıt başarılı!');
-    } catch (error: any) {
-      console.error('Registration failed:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
+  const register = async (email: string, password: string) => {
+    setIsLoading(true);
+    const { error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success('Kayıt başarılı! Lütfen e-postanı kontrol et.');
     }
+    setIsLoading(false);
   };
 
-  const logout = () => {
-    authAPI.logout();
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
     toast.success('Çıkış yapıldı');
-  };
-
-  const updateUser = (updatedUser: User) => {
-    setUser(updatedUser);
-    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
   };
 
   const value = {
@@ -107,7 +79,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     register,
     logout,
-    updateUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
