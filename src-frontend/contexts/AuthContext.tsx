@@ -1,10 +1,14 @@
-// src-frontend/contexts/AuthContext.tsx
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase } from '../lib/supabaseClient';
-import { toast } from 'sonner';
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { supabase } from "../lib/supabaseClient";
+import { toast } from "sonner";
+
+interface User {
+  id: string;
+  email: string;
+}
 
 interface AuthContextType {
-  user: any | null;
+  user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -16,70 +20,69 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within an AuthProvider');
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
   return context;
 };
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<any | null>(null);
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // ✅ Uygulama ilk açıldığında session kontrolü
   useEffect(() => {
-    // Oturum kontrolü
-    const getSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      setUser(data?.session?.user ?? null);
+    const session = supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user ?? null);
       setIsLoading(false);
-    };
+    });
 
-    getSession();
-
-    // Oturum değişikliklerini dinle
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+    // ✅ Oturum değişikliklerini dinle
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
     return () => {
-      subscription.subscription.unsubscribe();
+      listener.subscription.unsubscribe();
     };
   }, []);
 
   const login = async (email: string, password: string) => {
-    setIsLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       toast.error(error.message);
-    } else {
-      toast.success('Giriş başarılı!');
+      return;
     }
-    setIsLoading(false);
+    toast.success("Giriş başarılı!");
+    setUser(data.user);
   };
 
   const register = async (email: string, password: string) => {
-    setIsLoading(true);
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({ email, password });
     if (error) {
       toast.error(error.message);
-    } else {
-      toast.success('Kayıt başarılı! Lütfen e-postanı kontrol et.');
+      return;
     }
-    setIsLoading(false);
+    toast.success("Kayıt başarılı! Lütfen e-postanı doğrula.");
+    setUser(data.user);
   };
 
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
-    toast.success('Çıkış yapıldı');
+    toast.success("Çıkış yapıldı");
   };
 
-  const value = {
-    user,
-    isAuthenticated: !!user,
-    isLoading,
-    login,
-    register,
-    logout,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated: !!user,
+        isLoading,
+        login,
+        register,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
