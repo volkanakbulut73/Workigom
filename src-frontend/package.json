@@ -74,3 +74,6 @@
     "preview": "vite preview --port 8080"
   }
 }
+"engines": {
+  "node": "22.x"
+}
