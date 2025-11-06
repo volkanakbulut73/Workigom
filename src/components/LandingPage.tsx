@@ -56,7 +56,7 @@ export function LandingPage({ onGetStarted, onAdminLogin }: LandingPageProps) {
               <br />
               <span className="relative inline-block">
                 <span className="relative z-10 bg-gradient-to-r from-[#0367A6] via-[#3F9BBF] to-[#0367A6] bg-clip-text text-transparent">
-                  Yardım Et
+                  Destek Ol
                 </span>
                 <svg className="absolute -bottom-2 left-0 w-full" height="12" viewBox="0 0 200 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M2 10C60 2 140 2 198 10" stroke="#3F9BBF" strokeWidth="3" strokeLinecap="round"/>
