@@ -129,10 +129,14 @@ function AppContent() {
     );
   }
 
+  const handleAdminLogin = () => {
+    setAppView('login');
+  };
+
   if (appView === 'landing') {
     return (
       <>
-        <LandingPage onGetStarted={handleGetStarted} />
+        <LandingPage onGetStarted={handleGetStarted} onAdminLogin={handleAdminLogin} />
         <Toaster />
       </>
     );

@@ -35,23 +35,23 @@ export function LandingPage({ onGetStarted, onAdminLogin }: LandingPageProps) {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative max-w-7xl mx-auto px-4 lg:px-8 py-12 lg:py-20 overflow-hidden">
+      {/* Hero Section - Full Screen with Floating Cards */}
+      <section className="relative max-w-7xl mx-auto px-4 lg:px-8 py-12 lg:py-20 overflow-hidden min-h-[calc(100vh-100px)] flex items-center">
         {/* Decorative Background Blobs */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-[#C9E2F2]/40 to-[#3F9BBF]/20 rounded-full blur-3xl -z-10"></div>
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-tr from-[#0367A6]/10 to-[#C9E2F2]/30 rounded-full blur-3xl -z-10"></div>
         
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center w-full">
           {/* Left: Content */}
           <div className="relative z-10">
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#C9E2F2] to-[#3F9BBF]/20 px-5 py-2.5 rounded-full mb-6 shadow-sm">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#C9E2F2] to-[#3F9BBF]/20 px-5 py-2.5 rounded-full mb-8 shadow-sm">
               <Sparkles className="w-4 h-4 text-[#0367A6]" />
               <span className="text-sm text-[#012840]">Sosyal Sorumluluk Platformu</span>
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-[#012840] mb-6 leading-[1.15]">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-[#012840] mb-8 leading-[1.15]">
               İş Bul,
               <br />
               <span className="relative inline-block">
@@ -65,53 +65,45 @@ export function LandingPage({ onGetStarted, onAdminLogin }: LandingPageProps) {
               <br />
               <span className="inline-flex items-center gap-3">
                 Birlikte Büyü
-                <Heart className="w-10 h-10 lg:w-12 lg:h-12 text-[#0367A6] inline-block animate-pulse" fill="#0367A6" />
+                <Heart className="w-10 h-10 lg:w-12 lg:h-12 text-[#0367A6] inline-block" fill="#0367A6" />
               </span>
             </h1>
 
             {/* Description */}
-            <div className="space-y-4 mb-10 max-w-xl">
+            <div className="space-y-5 mb-0 max-w-xl">
               <p className="text-lg lg:text-xl text-[#012840] leading-relaxed">
                 <span className="font-semibold">Günlük iş fırsatları ve acil eleman ihtiyaçları için tek platform: Workigom!</span>
               </p>
               <p className="text-base lg:text-lg text-[#3F9BBF] leading-relaxed">
                 Hem çalışanlar için ek gelir fırsatları, hem de şirketler için anında personel desteği.
               </p>
-              <div className="bg-gradient-to-r from-[#C9E2F2]/50 to-transparent p-4 rounded-2xl border-l-4 border-[#0367A6]">
+              <div className="bg-gradient-to-r from-[#C9E2F2]/50 to-transparent p-5 rounded-2xl border-l-4 border-[#0367A6]">
                 <p className="text-base text-[#012840] leading-relaxed">
-                  Üstelik sosyal dayanışma modülümüzle, <span className="font-semibold text-[#0367A6]">'Dayanışma Menüsü'</span> üzerinden restoran harcamalarına destek olabilir veya destek bulabilir ve paylaşmanın bir parçası olabilirsin! 💙
+                  Üstelik sosyal dayanışma modülümüzle, <span className="font-semibold text-[#0367A6]">"Yemeksiz Destek Ol"</span> ya da <span className="font-semibold text-[#0367A6]">"Yemek Desteği Bul"</span> diyerek, restoran harcamalarına destek olabilir veya destek bulabilir ve paylaşmanın bir parçası olabilirsin! 💙
                 </p>
               </div>
             </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
-                size="lg"
-                onClick={onGetStarted}
-                className="group bg-[#012840] hover:bg-[#0367A6] text-lg px-8 py-7 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 rounded-2xl relative overflow-hidden"
-              >
-                <span className="relative z-10 flex items-center">
-                  <Heart className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" fill="white" />
-                  Ücretsiz Başla
-                </span>
-              </Button>
-              <Button 
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 py-7 border-2 border-[#C9E2F2] bg-white/60 backdrop-blur-sm text-[#012840] hover:bg-[#C9E2F2]/50 hover:border-[#3F9BBF] transition-all duration-300 rounded-2xl"
-              >
-                <Sparkles className="w-5 h-5 mr-2" />
-                Nasıl Çalışır?
-              </Button>
-            </div>
           </div>
 
-          {/* Right: Visual Cards with Floating Animation */}
-          <div className="relative lg:h-[600px] flex items-center justify-center">
-            {/* Center Card - Main Focus */}
+          {/* Right: Floating Cards Layout */}
+          <div className="relative lg:h-[650px] flex items-center justify-center">
+            {/* Top Floating Card - Günlük İşler */}
+            <div className="absolute top-0 right-0 lg:right-12 xl:right-20 animate-float-slow hidden lg:block z-10">
+              <Card className="p-6 bg-white border-2 border-[#C9E2F2]/60 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 w-[200px]">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#0367A6] to-[#3F9BBF] rounded-2xl flex items-center justify-center">
+                    <Briefcase className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="w-2 h-2 bg-[#10B981] rounded-full animate-pulse"></div>
+                </div>
+                <h4 className="text-[#012840] mb-1">Günlük İşler</h4>
+                <p className="text-xs text-[#3F9BBF]">125 aktif ilan</p>
+              </Card>
+            </div>
+
+            {/* Center Card - Main Stats */}
             <div className="relative z-20">
-              <Card className="p-8 bg-white border-2 border-[#C9E2F2] rounded-[2rem] shadow-2xl w-full max-w-[340px] mx-auto hover:shadow-3xl transition-all duration-500 hover:-translate-y-2">
+              <Card className="p-8 bg-white border-2 border-[#C9E2F2] rounded-[2rem] shadow-2xl w-full max-w-[380px] mx-auto hover:shadow-3xl transition-all duration-500">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-gradient-to-br from-[#0367A6] to-[#3F9BBF] rounded-2xl flex items-center justify-center">
@@ -126,52 +118,44 @@ export function LandingPage({ onGetStarted, onAdminLogin }: LandingPageProps) {
                 </div>
                 
                 <div className="space-y-4">
-                  <div className="bg-gradient-to-br from-[#C9E2F2]/30 to-[#C9E2F2]/10 p-4 rounded-2xl">
+                  <div className="bg-gradient-to-br from-[#C9E2F2]/30 to-[#C9E2F2]/10 p-5 rounded-2xl">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm text-[#3F9BBF]">Bu Ay</span>
                       <TrendingUp className="w-4 h-4 text-[#10B981]" />
                     </div>
-                    <div className="text-2xl font-bold text-[#012840]">₺12,450</div>
+                    <div className="text-3xl font-bold text-[#012840]">₺12,450</div>
                     <p className="text-xs text-[#3F9BBF] mt-1">+23% artış</p>
                   </div>
 
                   <div className="flex gap-3">
-                    <div className="flex-1 bg-gradient-to-br from-[#10B981]/10 to-[#10B981]/5 p-3 rounded-xl text-center">
-                      <div className="text-xl font-bold text-[#012840]">24</div>
-                      <p className="text-xs text-[#3F9BBF]">Tamamlanan</p>
+                    <div className="flex-1 bg-gradient-to-br from-[#10B981]/10 to-[#10B981]/5 p-4 rounded-xl text-center">
+                      <div className="text-2xl font-bold text-[#012840]">24</div>
+                      <p className="text-xs text-[#3F9BBF] mt-1">Tamamlanan</p>
                     </div>
-                    <div className="flex-1 bg-gradient-to-br from-[#0367A6]/10 to-[#0367A6]/5 p-3 rounded-xl text-center">
-                      <div className="text-xl font-bold text-[#012840]">15</div>
-                      <p className="text-xs text-[#3F9BBF]">Destek Sayısı</p>
+                    <div className="flex-1 bg-gradient-to-br from-[#0367A6]/10 to-[#0367A6]/5 p-4 rounded-xl text-center">
+                      <div className="text-2xl font-bold text-[#012840]">15</div>
+                      <p className="text-xs text-[#3F9BBF] mt-1">Konum</p>
                     </div>
                   </div>
                 </div>
               </Card>
             </div>
 
-            {/* Floating Cards - Top Right */}
-            <div className="absolute top-0 right-0 animate-float-slow hidden lg:block">
-              <Card className="p-5 bg-white border border-[#C9E2F2]/60 rounded-3xl shadow-lg w-[180px]">
-                <div className="w-10 h-10 bg-[#3F9BBF] rounded-2xl flex items-center justify-center mb-3">
-                  <Briefcase className="w-5 h-5 text-white" />
+            {/* Bottom Floating Card - Öğün Desteği */}
+            <div className="absolute bottom-8 left-0 lg:left-12 xl:left-20 animate-float-medium hidden lg:block z-10">
+              <Card className="p-6 bg-white border-2 border-[#C9E2F2]/60 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 w-[200px]">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#10B981] to-[#0367A6] rounded-2xl flex items-center justify-center">
+                    <Coffee className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="w-2 h-2 bg-[#10B981] rounded-full animate-pulse"></div>
                 </div>
-                <h4 className="text-sm text-[#012840] mb-1">Günlük İşler</h4>
-                <p className="text-xs text-[#3F9BBF]">125 aktif ilan</p>
-              </Card>
-            </div>
-
-            {/* Floating Cards - Bottom Left */}
-            <div className="absolute bottom-8 left-0 animate-float-medium hidden lg:block">
-              <Card className="p-5 bg-white border border-[#C9E2F2]/60 rounded-3xl shadow-lg w-[180px]">
-                <div className="w-10 h-10 bg-[#10B981] rounded-2xl flex items-center justify-center mb-3">
-                  <Coffee className="w-5 h-5 text-white" />
-                </div>
-                <h4 className="text-sm text-[#012840] mb-1">Dayanışma Menüsü</h4>
+                <h4 className="text-[#012840] mb-1">Öğün Desteği</h4>
                 <p className="text-xs text-[#3F9BBF]">456 kişiye ulaştı</p>
               </Card>
             </div>
 
-            {/* Decorative Elements */}
+            {/* Decorative Blurs */}
             <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-br from-[#3F9BBF]/20 to-transparent rounded-full blur-2xl animate-pulse hidden lg:block"></div>
             <div className="absolute bottom-20 right-10 w-32 h-32 bg-gradient-to-br from-[#0367A6]/20 to-transparent rounded-full blur-2xl animate-pulse hidden lg:block"></div>
           </div>
@@ -203,7 +187,7 @@ export function LandingPage({ onGetStarted, onAdminLogin }: LandingPageProps) {
             <span className="text-sm text-white">Sosyal Etki</span>
           </div>
           <h2 className="text-3xl lg:text-5xl font-bold text-white mb-6">
-            Her İş, Bir Dayanışma Hikayesi! 💙
+            Her İş, Bir İyilik Hareketi! 💙
           </h2>
           <p className="text-xl text-[#C9E2F2] max-w-3xl mx-auto mb-12">
             Workigom'da çalışarak sadece kendin için değil, toplum için de değer yaratıyorsun. 
@@ -231,7 +215,7 @@ export function LandingPage({ onGetStarted, onAdminLogin }: LandingPageProps) {
               <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <CircleDollarSign className="w-8 h-8 text-[#0367A6]" />
               </div>
-              <div className="text-4xl font-bold text-white mb-2">₺89K</div>
+              <div className="text-4xl font-bold text-white mb-2">₺1.89K</div>
               <p className="text-[#C9E2F2]">Toplam Kazanç</p>
             </div>
           </div>
