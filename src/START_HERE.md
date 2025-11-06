@@ -49,7 +49,8 @@ chmod +x GITHUB_OTOMATIK_PUSH.sh
 📄 START_HERE.md                    ← ŞU AN BURADASINIZ
 📄 HEMEN_GITHUB_YUKLE.md            ← GitHub push rehberi
 📄 HIZLI_TEST_REHBERI.md            ← Test adımları
-📄 SUPABASE_TEST_KULLANICI_OLUSTUR.md ← Login için gerekli
+📄 SUPABASE_AI_PROMPT.md            ← ⭐ Supabase kurulum (YENİ!)
+📄 SUPABASE_HIZLI_KURULUM.md        ← ⭐ Supabase 3dk rehber (YENİ!)
 
 🔧 GITHUB_OTOMATIK_PUSH.bat         ← ÇALIŞTIRIN (Windows)
 🔧 GITHUB_OTOMATIK_PUSH.sh          ← ÇALIŞTIRIN (Mac/Linux)
@@ -71,7 +72,11 @@ chmod +x GITHUB_OTOMATIK_PUSH.sh
 - ✅ Responsive tasarım (mobil + desktop)
 
 ### **Backend:**
-- ✅ Supabase entegrasyonu
+- ⏳ Supabase kurulumu (3 dakikada tamamla → `SUPABASE_HIZLI_KURULUM.md`)
+- ✅ Supabase migration dosyaları hazır
+- ✅ Database şemaları hazır (6 tablo)
+- ✅ RLS policies hazır (20+ policy)
+- ✅ Test kullanıcıları hazır (3 kullanıcı)
 - ✅ Auth sistemi (email/password)
 - ✅ Database şeması
 - ✅ API endpoints

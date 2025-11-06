@@ -27,8 +27,8 @@ npm run build
 ### 👤 Bireysel Kullanıcılar (Çalışanlar)
 - ⚡ Acil iş ilanlarına başvuru
 - 💼 İş geçmişi takibi
-- 🍽️ Yemek bağışı sistemi (Destek bul/Bağışçı ol)
-- 💛 Altın Kalp rozetleri (%100 destek için)
+- 🍽️ Menü Market paylaşım sistemi (Paylaşım bul/Destekçi ol)
+- 💛 Altın Kalp rozetleri (%100 paylaşım için)
 - 📱 Bildirimler ve mesajlaşma
 - 👤 Profil yönetimi
 
@@ -39,9 +39,9 @@ npm run build
 - ✅ Başvuru onaylama/reddetme
 - 💰 Kazanç takibi
 
-### 🎯 Yemek Bağışı Sistemi
-- %20 kısmi destek akışı
-- %100 "Buda Benden" tam destek akışı
+### 🎯 Menü Market Paylaşım Sistemi
+- %20 kısmi paylaşım akışı
+- %100 "Buda Benden" tam paylaşım akışı
 - QR kod sistemi (300 saniyelik countdown)
 - Detaylı tracking sistemi
 - Bildirim ve mesajlaşma entegrasyonu
