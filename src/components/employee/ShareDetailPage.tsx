@@ -8,12 +8,12 @@ import { Label } from "../ui/label";
 import { FoodDonationRequest } from "../../lib/mockData";
 import { toast } from "sonner";
 
-interface DonationDetailPageProps {
+interface ShareDetailPageProps {
   onNavigate: (page: string) => void;
   requestId?: string;
 }
 
-export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPageProps) {
+export function ShareDetailPage({ onNavigate, requestId }: ShareDetailPageProps) {
   const [request, setRequest] = useState<FoodDonationRequest | null>(null);
   const [qrImage, setQrImage] = useState<File | null>(null);
   const [countdown, setCountdown] = useState(300);
@@ -21,7 +21,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
   useEffect(() => {
     if (!requestId) return;
     
-    const requests = JSON.parse(localStorage.getItem('foodDonationRequests') || '[]');
+    const requests = JSON.parse(localStorage.getItem('menuMarketShares') || '[]');
     const found = requests.find((r: FoodDonationRequest) => r.id === requestId);
     setRequest(found || null);
   }, [requestId]);
@@ -31,7 +31,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
     if (!request || !requestId) return;
 
     const pollInterval = setInterval(() => {
-      const requests = JSON.parse(localStorage.getItem('foodDonationRequests') || '[]');
+      const requests = JSON.parse(localStorage.getItem('menuMarketShares') || '[]');
       const updated = requests.find((r: FoodDonationRequest) => r.id === requestId);
       
       if (updated && updated.status !== request.status) {
@@ -43,7 +43,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
           });
         } else if (updated.status === 'payment_confirmed') {
           toast.success('🎉 Onaylandı!', {
-            description: 'Destek tamamlandı'
+            description: 'Paylaşım tamamlandı'
           });
         }
       }
@@ -52,14 +52,14 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
     return () => clearInterval(pollInterval);
   }, [request, requestId]);
 
-  // Completed durumunda aktif donation'ı temizle
+  // Completed durumunda aktif share'i temizle
   useEffect(() => {
-    if (request?.status === 'completed' && request.donorId) {
-      const activeDonations = JSON.parse(localStorage.getItem('activeDonations') || '{}');
-      delete activeDonations[request.donorId];
-      localStorage.setItem('activeDonations', JSON.stringify(activeDonations));
+    if (request?.status === 'completed' && request.supporterId) {
+      const activeShares = JSON.parse(localStorage.getItem('activeShares') || '{}');
+      delete activeShares[request.supporterId];
+      localStorage.setItem('activeShares', JSON.stringify(activeShares));
     }
-  }, [request?.status, request?.donorId]);
+  }, [request?.status, request?.supporterId]);
 
   // Countdown timer için ayrı useEffect
   useEffect(() => {
@@ -76,14 +76,14 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
       if (newRemaining <= 0) {
         clearInterval(timer);
         // QR süresi doldu - localStorage'ı güncelle
-        const requests = JSON.parse(localStorage.getItem('foodDonationRequests') || '[]');
+        const requests = JSON.parse(localStorage.getItem('menuMarketShares') || '[]');
         const updatedRequests = requests.map((r: FoodDonationRequest) => {
           if (r.id === request.id) {
             return { ...r, status: 'qr_expired' };
           }
           return r;
         });
-        localStorage.setItem('foodDonationRequests', JSON.stringify(updatedRequests));
+        localStorage.setItem('menuMarketShares', JSON.stringify(updatedRequests));
       }
     }, 1000);
 
@@ -92,10 +92,10 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
 
   // %100 desteğinde otomatik QR yükleme ekranına geçiş
   useEffect(() => {
-    if (request?.status === 'donor_matched' && request.isFullSupport) {
+    if (request?.status === 'supporter_matched' && request.isFullSupport) {
       // 3 saniye sonra otomatik olarak qr_pending'e geç
       const timer = setTimeout(() => {
-        const requests = JSON.parse(localStorage.getItem('foodDonationRequests') || '[]');
+        const requests = JSON.parse(localStorage.getItem('menuMarketShares') || '[]');
         const updatedRequests = requests.map((r: FoodDonationRequest) => {
           if (r.id === requestId) {
             return {
@@ -106,10 +106,10 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
           }
           return r;
         });
-        localStorage.setItem('foodDonationRequests', JSON.stringify(updatedRequests));
+        localStorage.setItem('menuMarketShares', JSON.stringify(updatedRequests));
         
         toast.success('📲 QR Kod Yükleme Ekranına Yönlendiriliyorsunuz...', {
-          description: 'Destek alan kişi ödeme yapmayacak'
+          description: 'Paylaşım alan kişi ödeme yapmayacak'
         });
       }, 3000);
 
@@ -121,7 +121,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#C9E2F2]/30 to-white p-4">
         <p>Talep bulunamadı</p>
-        <Button onClick={() => onNavigate('donor-list')}>Geri Dön</Button>
+        <Button onClick={() => onNavigate('supporter-list')}>Geri Dön</Button>
       </div>
     );
   }
@@ -138,7 +138,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
     // QR yükleme işlemi
     const qrExpiresAt = new Date(Date.now() + 300000).toISOString(); // 5 dakika
     
-    const requests = JSON.parse(localStorage.getItem('foodDonationRequests') || '[]');
+    const requests = JSON.parse(localStorage.getItem('menuMarketShares') || '[]');
     const updatedRequests = requests.map((r: FoodDonationRequest) => {
       if (r.id === requestId) {
         return {
@@ -151,9 +151,9 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
       }
       return r;
     });
-    localStorage.setItem('foodDonationRequests', JSON.stringify(updatedRequests));
+    localStorage.setItem('menuMarketShares', JSON.stringify(updatedRequests));
 
-    // Destek arayan kişiye bildirim
+    // Paylaşım arayan kişiye bildirim
     const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
     notifications.unshift({
       id: Date.now().toString(),
@@ -168,7 +168,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
     localStorage.setItem('notifications', JSON.stringify(notifications));
 
     toast.success('QR kod yüklendi!', {
-      description: 'Destek alan kişi QR kodu görebilecek'
+      description: 'Paylaşım alan kişi QR kodu görebilecek'
     });
 
     setRequest({...request, status: 'qr_uploaded', qrExpiresAt, qrImageUrl: URL.createObjectURL(qrImage)});
@@ -181,20 +181,20 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Tracking görünümü - Bağışçı tarafı
+  // Tracking görünümü - Destekçi tarafı
   const renderTracking = (currentStatus: string, isFullSupport: boolean) => {
     const steps = isFullSupport 
       ? ['Eşleşme', 'QR Hazırlama', 'QR Yüklendi', 'Ödeme Yapıldı', 'Tamamlandı']
       : ['Eşleşme', 'Alıcı Ödemesi', 'QR Hazırlama', 'QR Yüklendi', 'Ödeme Yapıldı', 'Tamamlandı'];
     
     const stepStatus = isFullSupport ? {
-      'donor_matched': 0,
+      'supporter_matched': 0,
       'qr_pending': 1,
       'qr_uploaded': 2,
       'payment_confirmed': 3,
       'completed': 4
     } : {
-      'donor_matched': 0,
+      'supporter_matched': 0,
       'payment_pending': 1,
       'qr_pending': 2,
       'qr_uploaded': 3,
@@ -238,11 +238,11 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
     );
   };
 
-  const handleCancelDonation = () => {
+  const handleCancelShare = () => {
     if (!request) return;
 
-    // Destek talebini tekrar "waiting" durumuna döndür (bağışçı bilgilerini temizle)
-    const requests = JSON.parse(localStorage.getItem('foodDonationRequests') || '[]');
+    // Paylaşım talebini tekrar "waiting" durumuna döndür (destekçi bilgilerini temizle)
+    const requests = JSON.parse(localStorage.getItem('menuMarketShares') || '[]');
     const updatedRequests = requests.map((r: FoodDonationRequest) => {
       if (r.id === request.id) {
         return {
@@ -260,27 +260,27 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
       }
       return r;
     });
-    localStorage.setItem('foodDonationRequests', JSON.stringify(updatedRequests));
+    localStorage.setItem('menuMarketShares', JSON.stringify(updatedRequests));
 
     // Talep sahibine bildirim gönder
     const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
     notifications.unshift({
       id: Date.now().toString(),
       userId: request.userId,
-      type: 'donation_cancelled',
-      title: '❌ Bağışçı İptal Etti',
-      message: `${request.donorName} desteği iptal etti. Talebiniz tekrar yayınlandı.`,
+      type: 'share_cancelled',
+      title: '❌ Destekçi İptal Etti',
+      message: `${request.supporterName} paylaşımı iptal etti. Talebiniz tekrar yayınlandı.`,
       timestamp: new Date().toISOString(),
       read: false,
       requestId: request.id
     });
     localStorage.setItem('notifications', JSON.stringify(notifications));
 
-    // Aktif donation'ı temizle
-    const activeDonations = JSON.parse(localStorage.getItem('activeDonations') || '{}');
-    if (request.donorId) {
-      delete activeDonations[request.donorId];
-      localStorage.setItem('activeDonations', JSON.stringify(activeDonations));
+    // Aktif share'i temizle
+    const activeShares = JSON.parse(localStorage.getItem('activeShares') || '{}');
+    if (request.supporterId) {
+      delete activeShares[request.supporterId];
+      localStorage.setItem('activeShares', JSON.stringify(activeShares));
     }
 
     toast.success('✅ İşlem iptal edildi', {
@@ -289,12 +289,12 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
 
     // Geri dön
     setTimeout(() => {
-      onNavigate('donor-list');
+      onNavigate('supporter-list');
     }, 1000);
   };
 
-  // Bağışçı tarafı: Eşleşme Tamamlandı - Tracking başladı
-  if (request.status === 'donor_matched') {
+  // Destekçi tarafı: Eşleşme Tamamlandı - Tracking başladı
+  if (request.status === 'supporter_matched') {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#C9E2F2]/30 to-white pb-20 lg:pb-6">
         <div className="bg-gradient-to-br from-emerald-500 to-teal-500 text-white p-4 lg:p-6 rounded-b-3xl lg:rounded-none">
@@ -302,7 +302,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onNavigate('donor-list')}
+              onClick={() => onNavigate('supporter-list')}
               className="text-white hover:bg-white/10 mb-4 -ml-2"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -313,7 +313,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
         </div>
 
         <div className="max-w-4xl mx-auto px-4 lg:px-6 mt-4">
-          {renderTracking('donor_matched', request.isFullSupport || false)}
+          {renderTracking('supporter_matched', request.isFullSupport || false)}
           
           <Card className="p-8 border-0 shadow-lg text-center">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center mx-auto mb-6 animate-pulse">
@@ -333,7 +333,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
                 <span className="text-[#012840]">{request.menuAmount} ₺</span>
               </div>
               <div className="flex items-center justify-between py-3 px-4 bg-emerald-50 rounded-lg">
-                <span className="text-sm text-emerald-700">Sizin Desteğiniz:</span>
+                <span className="text-sm text-emerald-700">Sizin Paylaşımınız:</span>
                 <span className="text-emerald-700">
                   {request.isFullSupport ? request.menuAmount : Math.round(request.menuAmount * 0.2)} ₺ ({request.supportRate}%)
                 </span>
@@ -370,7 +370,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
               <Button
                 variant="ghost"
                 className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
-                onClick={handleCancelDonation}
+                onClick={handleCancelShare}
               >
                 İşlemi İptal Et
               </Button>
@@ -381,7 +381,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
     );
   }
 
-  // Bağışçı tarafı: Ödeme Bekleniyor - Ali ödeme yapıyor (sadece %20 için)
+  // Destekçi tarafı: Ödeme Bekleniyor - Ali ödeme yapıyor (sadece %20 için)
   if (request.status === 'payment_pending') {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#C9E2F2]/30 to-white pb-20 lg:pb-6">
@@ -390,7 +390,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onNavigate('donor-list')}
+              onClick={() => onNavigate('supporter-list')}
               className="text-white hover:bg-white/10 mb-4 -ml-2"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -430,7 +430,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
               <Button
                 variant="ghost"
                 className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
-                onClick={handleCancelDonation}
+                onClick={handleCancelShare}
               >
                 İşlemi İptal Et
               </Button>
@@ -441,7 +441,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
     );
   }
 
-  // Bağışçı tarafı: QR Yükleme Bekliyor
+  // Destekçi tarafı: QR Yükleme Bekliyor
   if (request.status === 'qr_pending') {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#C9E2F2]/30 to-white pb-20 lg:pb-6">
@@ -450,7 +450,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onNavigate('donor-list')}
+              onClick={() => onNavigate('supporter-list')}
               className="text-white hover:bg-white/10 mb-4 -ml-2"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -469,7 +469,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
                 <CheckCircle className="w-8 h-8 text-white" />
               </div>
               <h3 className="text-[#012840] mb-2">
-                {request.isFullSupport ? 'Destek Bekleyen Hazır ✅' : 'Yemek Tutarının Ödemesi Yapıldı ✅'}
+                {request.isFullSupport ? 'Paylaşım Bekleyen Hazır ✅' : 'Yemek Tutarının Ödemesi Yapıldı ✅'}
               </h3>
               <p className="text-[#0367A6] mb-2">
                 Lütfen {request.menuAmount} TL'lik QR kodu oluşturup ekran görüntüsünü yükleyiniz.
@@ -527,7 +527,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
                 <Button
                   variant="ghost"
                   className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
-                  onClick={handleCancelDonation}
+                  onClick={handleCancelShare}
                 >
                   İşlemi İptal Et
                 </Button>
@@ -551,7 +551,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onNavigate('donor-list')}
+              onClick={() => onNavigate('supporter-list')}
               className="text-white hover:bg-white/10 mb-4 -ml-2"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -639,7 +639,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
             <Button
               variant="ghost"
               className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 mt-4"
-              onClick={handleCancelDonation}
+              onClick={handleCancelShare}
             >
               İşlemi İptal Et
             </Button>
@@ -696,7 +696,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
       <div className="min-h-screen bg-gradient-to-b from-[#C9E2F2]/30 to-white pb-20 lg:pb-6">
         <div className="bg-gradient-to-br from-emerald-500 to-teal-500 text-white p-4 lg:p-6 rounded-b-3xl lg:rounded-none">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-white">Destek Tamamlandı</h1>
+            <h1 className="text-white">Paylaşım Tamamlandı</h1>
           </div>
         </div>
 
@@ -710,7 +710,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
             
             {request.isFullSupport ? (
               <>
-                <h2 className="text-[#012840] mb-3">Destek Tamamlandı 💛</h2>
+                <h2 className="text-[#012840] mb-3">Paylaşım Tamamlandı 💛</h2>
                 <p className="text-[#0367A6] mb-6 leading-relaxed">
                   {request.userName} için tam destek sağladınız! Profilinizde Altın Kalp ❤️ rozeti kazandınız.
                 </p>
@@ -724,9 +724,9 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
               </>
             ) : (
               <>
-                <h2 className="text-[#012840] mb-3">Destek Tamamlandı 💛</h2>
+                <h2 className="text-[#012840] mb-3">Paylaşım Tamamlandı 💛</h2>
                 <p className="text-[#0367A6] mb-6 leading-relaxed">
-                  {request.userName} için yemek desteği başarıyla tamamlandı. Teşekkürler!
+                  {request.userName} için yemek paylaşımı başarıyla tamamlandı. Teşekkürler!
                 </p>
               </>
             )}
@@ -735,9 +735,9 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
               <Button
                 variant="outline"
                 className="flex-1"
-                onClick={() => onNavigate('food-donation-home')}
+                onClick={() => onNavigate('menu-market-home')}
               >
-                Yemek Bağışı
+                Menü Market
               </Button>
               <Button
                 className="flex-1 bg-gradient-to-r from-[#0367A6] to-[#012840] hover:from-[#012840] hover:to-[#0367A6]"
@@ -761,7 +761,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => onNavigate('donor-list')}
+              onClick={() => onNavigate('supporter-list')}
               className="text-white hover:bg-white/10 mb-4 -ml-2"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -780,7 +780,7 @@ export function DonationDetailPage({ onNavigate, requestId }: DonationDetailPage
             </p>
             <Button
               className="bg-gradient-to-r from-[#0367A6] to-[#012840] hover:from-[#012840] hover:to-[#0367A6]"
-              onClick={() => onNavigate('donor-list')}
+              onClick={() => onNavigate('supporter-list')}
             >
               Taleplere Dön
             </Button>
