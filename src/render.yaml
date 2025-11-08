@@ -1,10 +1,18 @@
 services:
+  # Frontend - React Static Site
   - type: web
-    name: workigom
+    name: workigom-frontend
     runtime: static
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
     pullRequestPreviewsEnabled: true
+    envVars:
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
+      - key: VITE_BACKEND_URL
+        value: https://workigom-backend.onrender.com
     headers:
       - path: /*
         name: X-Frame-Options
@@ -15,7 +23,28 @@ services:
       - path: /*
         name: Referrer-Policy
         value: strict-origin-when-cross-origin
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
     routes:
       - type: rewrite
         source: /*
         destination: /index.html
+
+  # Backend - Deno Web Service
+  - type: web
+    name: workigom-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile.backend
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_DB_URL
+        sync: false
+      - key: PORT
+        value: 10000
+    healthCheckPath: /make-server-018e1998/health

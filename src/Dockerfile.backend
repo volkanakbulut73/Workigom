@@ -1,0 +1,17 @@
+# Workigom Backend - Deno Runtime
+FROM denoland/deno:1.40.5
+
+# Set working directory
+WORKDIR /app
+
+# Copy backend files
+COPY supabase/functions/server/ ./server/
+
+# Set permissions
+RUN chmod -R 755 /app
+
+# Expose port
+EXPOSE 10000
+
+# Start the server
+CMD ["deno", "run", "--allow-net", "--allow-env", "--allow-read", "./server/index.tsx"]

@@ -21,7 +21,13 @@ app.use(
 
 // Health check endpoint
 app.get("/make-server-018e1998/health", (c) => {
-  return c.json({ status: "ok" });
+  return c.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-Deno.serve(app.fetch);
+// Get port from environment variable (Render.com uses PORT)
+const port = parseInt(Deno.env.get("PORT") || "8000");
+
+// Start server with port configuration
+Deno.serve({ port }, app.fetch);
+
+console.log(`🚀 Workigom Backend started on port ${port}`);
