@@ -27,12 +27,31 @@ echo "💾 Commit olusturuluyor: \"$COMMIT_MSG\""
 git commit -m "$COMMIT_MSG"
 
 echo ""
+echo "⬇️  Once remote degisiklikleri aliyorum (git pull)..."
+git pull origin main
+
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "⚠️  Git pull basarisiz! Conflict olabilir."
+    echo "📋 Conflict varsa:"
+    echo "   1. Dosyalari ac ve conflict'i coz"
+    echo "   2. git add ."
+    echo "   3. git commit -m \"fix: merge conflicts\""
+    echo "   4. Bu scripti tekrar calistir"
+    read -p "Devam etmek icin Enter'a basin..."
+    exit 1
+fi
+
+echo ""
 echo "⬆️  GitHub'a yukleniyor..."
 git push origin main
 
 if [ $? -ne 0 ]; then
     echo ""
     echo "❌ Git push basarisiz! Devam etmeden once sorunu cozun."
+    echo ""
+    echo "🔧 Hizli cozum:"
+    echo "   ./fix-git-push.sh calistirin"
     read -p "Devam etmek icin Enter'a basin..."
     exit 1
 fi

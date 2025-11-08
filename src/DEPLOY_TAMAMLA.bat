@@ -28,12 +28,31 @@ echo 💾 Commit olusturuluyor: "%COMMIT_MSG%"
 git commit -m "%COMMIT_MSG%"
 
 echo.
+echo ⬇️  Once remote degisiklikleri aliyorum (git pull)...
+git pull origin main
+
+if %ERRORLEVEL% NEQ 0 (
+    echo.
+    echo ⚠️  Git pull basarisiz! Conflict olabilir.
+    echo 📋 Conflict varsa:
+    echo   1. Dosyalari ac ve conflict'i coz
+    echo   2. git add .
+    echo   3. git commit -m "fix: merge conflicts"
+    echo   4. Bu scripti tekrar calistir
+    pause
+    exit /b 1
+)
+
+echo.
 echo ⬆️  GitHub'a yukleniyor...
 git push origin main
 
 if %ERRORLEVEL% NEQ 0 (
     echo.
     echo ❌ Git push basarisiz! Devam etmeden once sorunu cozun.
+    echo.
+    echo 🔧 Hizli cozum:
+    echo    fix-git-push.bat calistirin
     pause
     exit /b 1
 )
