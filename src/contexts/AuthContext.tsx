@@ -104,7 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     try {
-      // 1. Create auth user
+      // 1. Create auth user with email auto-confirmation
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
@@ -113,11 +113,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             full_name: data.fullName,
             user_type: data.userType,
           },
+          // Auto-confirm email since email server is not configured
+          emailRedirectTo: undefined,
         },
       });
 
-      if (authError) throw authError;
-      if (!authData.user) throw new Error('User creation failed');
+      if (authError) {
+        console.error('Auth signup error:', authError);
+        throw authError;
+      }
+      
+      if (!authData.user) {
+        console.error('No user returned from signup');
+        throw new Error('User creation failed');
+      }
+
+      console.log('User created successfully:', authData.user.id);
 
       // 2. Create user profile
       const { error: profileError } = await supabase.from('users').insert({
@@ -131,7 +142,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         address: data.address || null,
       });
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Profile creation error:', profileError);
+        throw profileError;
+      }
+
+      console.log('Profile created successfully');
 
       return { success: true };
     } catch (error: any) {
