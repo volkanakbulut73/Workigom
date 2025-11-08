@@ -71,7 +71,7 @@ Görmeli gerekenler:
 ✅ users
 ✅ jobs
 ✅ applications
-✅ donations
+✅ menu_shares
 ✅ notifications
 ✅ transactions
 ```

@@ -265,7 +265,7 @@ git checkout -b feature/yemek-bagisi
 
 # 3. Commit et
 git add .
-git commit -m "✨ Yemek bağışı sistemi eklendi"
+git commit -m "✨ Menü Market paylaşım sistemi eklendi"
 
 # 4. GitHub'a push et
 git push origin feature/yemek-bagisi

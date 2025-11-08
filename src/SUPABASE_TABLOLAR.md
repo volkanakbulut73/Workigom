@@ -171,9 +171,9 @@ INSERT INTO applications (
 
 ---
 
-### 4️⃣ `donations` Tablosu
+### 4️⃣ `menu_shares` Tablosu
 
-**Açıklama:** Dayanışma Menüsü yemek bağışları
+**Açıklama:** Menü Market paylaşım sistemi
 
 **Sütunlar:**
 

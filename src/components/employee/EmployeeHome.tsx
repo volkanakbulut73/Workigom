@@ -106,18 +106,18 @@ export function EmployeeHome({ onNavigate }: EmployeeHomeProps) {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 lg:px-6 -mt-5">
-        {/* Food Donation Banner */}
+        {/* Menu Market Banner */}
         <Card 
           className="mb-3 p-3 border-0 shadow-sm bg-gradient-to-r from-amber-50 to-orange-50 cursor-pointer hover:shadow-md transition-all"
-          onClick={() => onNavigate('food-donation-home')}
+          onClick={() => onNavigate('menu-market-home')}
         >
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center flex-shrink-0">
               <UtensilsCrossed className="w-5 h-5 text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="text-[#012840] text-sm mb-0">Dayanışma Menüsü 🍛</h4>
-              <p className="text-xs text-[#0367A6]">Katkıda Bulun & Paylaş</p>
+              <h4 className="text-[#012840] text-sm mb-0">Menü Market 🍛</h4>
+              <p className="text-xs text-[#0367A6]">Destek Ol & Paylaş</p>
             </div>
             <div className="text-amber-600 text-lg">→</div>
           </div>

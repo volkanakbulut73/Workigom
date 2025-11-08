@@ -28,7 +28,7 @@ git commit -m "🎉 Workigom - İş pazarı ve dayanışma platformu
 ✨ Özellikler:
 - Bireysel ve Kurumsal kullanıcı rolleri
 - Acil iş talep sistemi
-- Dayanışma Menüsü (Yemek bağışı sistemi)
+- Menü Market (Paylaşım sistemi)
 - QR kod ve countdown timer sistemi
 - Altın Kalp badge sistemi
 - Admin panel ve bildirim yönetimi

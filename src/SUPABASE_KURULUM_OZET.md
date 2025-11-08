@@ -29,7 +29,7 @@ Anon Key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
   - users (kullanıcı profilleri)
   - jobs (iş ilanları)
   - applications (iş başvuruları)
-  - donations (yemek bağışları)
+  - menu_shares (menü market paylaşımları)
   - notifications (bildirimler)
   - transactions (finansal işlemler)
 

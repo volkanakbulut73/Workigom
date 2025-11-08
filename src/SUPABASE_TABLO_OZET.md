@@ -15,7 +15,7 @@ Workigom uygulaması için **6 ana tablo + 1 storage bucket** gereklidir.
 | 1 | **users** | ~1,000-10,000 | Kullanıcı profilleri (bireysel/kurumsal/admin) | → jobs, applications, donations, notifications, transactions |
 | 2 | **jobs** | ~5,000-50,000 | İş ilanları ve acil iş talepleri | ← users, → applications |
 | 3 | **applications** | ~20,000-200,000 | İş başvuruları ve personel atamaları | ← users, jobs |
-| 4 | **donations** | ~1,000-10,000 | Dayanışma Menüsü yemek bağışları | ← users |
+| 4 | **menu_shares** | ~1,000-10,000 | Menü Market paylaşım sistemi | ← users |
 | 5 | **notifications** | ~50,000-500,000 | Sistem ve kullanıcı bildirimleri | ← users |
 | 6 | **transactions** | ~10,000-100,000 | Finansal işlemler (cari hesap) | ← users |
 
@@ -122,9 +122,9 @@ Workigom uygulaması için **6 ana tablo + 1 storage bucket** gereklidir.
 
 ---
 
-### 4. `donations` - Dayanışma Menüsü
+### 4. `menu_shares` - Menü Market
 
-**Amaç:** Yemek bağışlarını saklar (kısmi %20 ve tam %100)
+**Amaç:** Menü paylaşımlarını saklar (kısmi %20 ve tam %100)
 
 **Ana Sütunlar:**
 - `id` (UUID) - Bağış ID
@@ -209,7 +209,7 @@ Workigom uygulaması için **6 ana tablo + 1 storage bucket** gereklidir.
 
 **Kategoriler:**
 - `job_payment`: İş tamamlama ödemesi
-- `donation`: Yemek bağışı
+- `menu_share`: Menü Market paylaşımı
 - `withdrawal`: Para çekme
 - `admin_adjustment`: Admin düzeltmesi
 

@@ -97,7 +97,7 @@ git commit -m "🎉 Workigom - İş pazarı ve dayanışma platformu
 - React + TypeScript + Tailwind CSS
 - İki kullanıcı rolü (Bireysel/Kurumsal)
 - Acil iş talep sistemi
-- Dayanışma Menüsü (Yemek bağışı)
+- Menü Market (Paylaşım sistemi)
 - QR kod sistemi
 - Altın Kalp badge sistemi
 - Admin panel

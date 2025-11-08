@@ -53,13 +53,13 @@ CREATE TABLE applications (
   review TEXT
 );
 
--- Donations table
-CREATE TABLE donations (
+-- Menu Shares table
+CREATE TABLE menu_shares (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  donor_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  recipient_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  supporter_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  beneficiary_id UUID REFERENCES users(id) ON DELETE SET NULL,
   amount DECIMAL(10, 2) NOT NULL,
-  donation_type TEXT NOT NULL CHECK (donation_type IN ('partial', 'full')),
+  share_type TEXT NOT NULL CHECK (share_type IN ('partial', 'full')),
   qr_code_url TEXT,
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'confirmed', 'expired')),
   expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -98,9 +98,9 @@ CREATE INDEX idx_applications_job_id ON applications(job_id);
 CREATE INDEX idx_applications_individual_id ON applications(individual_id);
 CREATE INDEX idx_applications_corporate_id ON applications(corporate_id);
 CREATE INDEX idx_applications_status ON applications(status);
-CREATE INDEX idx_donations_donor_id ON donations(donor_id);
-CREATE INDEX idx_donations_recipient_id ON donations(recipient_id);
-CREATE INDEX idx_donations_status ON donations(status);
+CREATE INDEX idx_menu_shares_supporter_id ON menu_shares(supporter_id);
+CREATE INDEX idx_menu_shares_beneficiary_id ON menu_shares(beneficiary_id);
+CREATE INDEX idx_menu_shares_status ON menu_shares(status);
 CREATE INDEX idx_notifications_user_id ON notifications(user_id);
 CREATE INDEX idx_notifications_is_read ON notifications(is_read);
 CREATE INDEX idx_transactions_user_id ON transactions(user_id);
@@ -132,7 +132,7 @@ CREATE TRIGGER update_jobs_updated_at
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE jobs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE applications ENABLE ROW LEVEL SECURITY;
-ALTER TABLE donations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE menu_shares ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notifications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE transactions ENABLE ROW LEVEL SECURITY;
 
@@ -197,18 +197,18 @@ CREATE POLICY "Corporate users can update applications for their jobs"
   ON applications FOR UPDATE
   USING (auth.uid() = corporate_id);
 
--- Donations policies
-CREATE POLICY "Users can view their own donations"
-  ON donations FOR SELECT
-  USING (auth.uid() = donor_id OR auth.uid() = recipient_id);
+-- Menu Shares policies
+CREATE POLICY "Users can view their own menu shares"
+  ON menu_shares FOR SELECT
+  USING (auth.uid() = supporter_id OR auth.uid() = beneficiary_id);
 
-CREATE POLICY "Users can create donations"
-  ON donations FOR INSERT
-  WITH CHECK (auth.uid() = donor_id);
+CREATE POLICY "Users can create menu shares"
+  ON menu_shares FOR INSERT
+  WITH CHECK (auth.uid() = supporter_id);
 
-CREATE POLICY "Recipients can update donations"
-  ON donations FOR UPDATE
-  USING (auth.uid() = recipient_id);
+CREATE POLICY "Beneficiaries can update menu shares"
+  ON menu_shares FOR UPDATE
+  USING (auth.uid() = beneficiary_id);
 
 -- Notifications policies
 CREATE POLICY "Users can view their own notifications"

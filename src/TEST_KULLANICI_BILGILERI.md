@@ -19,7 +19,7 @@ Rol: Bireysel (Çalışan)
 
 **Kullanım Senaryoları:**
 - ✅ Acil iş ilanlarına başvuru yapma
-- ✅ Yemek bağışı talep etme (Ali rolü)
+- ✅ Menü Market paylaşımı talep etme (Ali rolü)
 - ✅ Profil yönetimi
 - ✅ Kazanç takibi
 
@@ -36,7 +36,7 @@ Rol: Bireysel (Çalışan)
 
 **Kullanım Senaryoları:**
 - ✅ Acil iş ilanlarına başvuru yapma
-- ✅ Yemek bağışı yapma (Ayşe rolü - Altın Kalp kazanma)
+- ✅ Menü Market paylaşımı yapma (Ayşe rolü - Altın Kalp kazanma)
 - ✅ İş geçmişi görüntüleme
 - ✅ Bildirimler
 
@@ -53,7 +53,7 @@ Rol: Bireysel (Çalışan)
 
 **Kullanım Senaryoları:**
 - ✅ Acil iş ilanlarına başvuru yapma
-- ✅ Yemek bağışı sistemi testleri
+- ✅ Menü Market paylaşım sistemi testleri
 - ✅ Mesajlaşma testleri
 
 ---
@@ -147,13 +147,13 @@ Kategori: Teknik
 
 ## 🧪 TEST SENARYOLARı
 
-### Yemek Bağışı Sistemi Testi
+### Menü Market Paylaşım Sistemi Testi
 
 **Ahmet Rolü (Destek Alan):**
 ```
 Kullanıcı: Ahmet Yılmaz (ahmet.yilmaz@email.com / ahmet123)
 1. Giriş yap
-2. Yemek Bağışı → Destek Bul
+2. Menü Market → Paylaşım Bul
 3. Form doldur (tutar: 1000 TL, minimum: %20)
 4. Destek talebini oluştur
 5. ✨ TALEP ARTIK GERÇEK ZAMANLI GÖRÜNÜYOR!
@@ -167,7 +167,7 @@ Kullanıcı: Ahmet Yılmaz (ahmet.yilmaz@email.com / ahmet123)
 ```
 Kullanıcı: Ayşe Demir (ayse.demir@email.com / ayse123)
 1. Giriş yap
-2. Yemek Bağışı → Destek Bekleyen Kişiler
+2. Menü Market → Paylaşım Bekleyen Kişiler
 3. ✨ Ahmet'in talebini ANINDA görürsünüz! (2 sn polling)
 4. Ahmet'in talebini seç
 5. %20 veya %100 seç

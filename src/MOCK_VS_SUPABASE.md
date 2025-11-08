@@ -27,7 +27,7 @@
 | **Bildirimler** | ❌ Çalışmaz | ✅ Çalışır |
 | **Admin Panel** | ❌ Çalışmaz | ✅ Tam yetkili |
 | **Profil Güncelleme** | ❌ Çalışmaz | ✅ Çalışır |
-| **Yemek Bağışı** | ❌ Çalışmaz | ✅ Çalışır |
+| **Menü Market** | ❌ Çalışmaz | ✅ Çalışır |
 | **QR Kod Sistemi** | ❌ Çalışmaz | ✅ Çalışır |
 | **Cari Hesap** | ❌ Çalışmaz | ✅ Çalışır |
 | **Kazanç Takibi** | ❌ Çalışmaz | ✅ Çalışır |

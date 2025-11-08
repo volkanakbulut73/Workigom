@@ -16,10 +16,10 @@ import { JobDetailPage } from "./components/employee/JobDetailPage";
 import { ProfilePage } from "./components/employee/ProfilePage";
 import { JobsPage } from "./components/employee/JobsPage";
 import { JobListingsPage } from "./components/employee/JobListingsPage";
-import { FoodDonationHome } from "./components/employee/FoodDonationHome";
-import { DonorListPage } from "./components/employee/DonorListPage";
-import { FindSupportPage } from "./components/employee/FindSupportPage";
-import { DonationDetailPage } from "./components/employee/DonationDetailPage";
+import { MenuMarketHome } from "./components/employee/MenuMarketHome";
+import { SupporterListPage } from "./components/employee/SupporterListPage";
+import { FindSharePage } from "./components/employee/FindSharePage";
+import { ShareDetailPage } from "./components/employee/ShareDetailPage";
 
 // Company Components
 import { CompanyHome } from "./components/company/CompanyHome";
@@ -57,10 +57,10 @@ type Page =
   | 'gelen-personeller'
   | 'notifications'
   | 'messages'
-  | 'food-donation-home'
-  | 'donor-list'
-  | 'find-support'
-  | 'donation-detail'
+  | 'menu-market-home'
+  | 'supporter-list'
+  | 'find-share'
+  | 'share-detail'
   | 'admin-panel';
 
 function AppContent() {
@@ -195,14 +195,14 @@ function AppContent() {
           return <JobsPage onNavigate={handleNavigate} />;
         case 'job-listings':
           return <JobListingsPage onNavigate={handleNavigate} />;
-        case 'food-donation-home':
-          return <FoodDonationHome onNavigate={handleNavigate} />;
-        case 'donor-list':
-          return <DonorListPage onNavigate={handleNavigate} currentUserId={user.id} />;
-        case 'find-support':
-          return <FindSupportPage onNavigate={handleNavigate} currentUserId={user.id} />;
-        case 'donation-detail':
-          return <DonationDetailPage onNavigate={handleNavigate} requestId={selectedJobId} />;
+        case 'menu-market-home':
+          return <MenuMarketHome onNavigate={handleNavigate} />;
+        case 'supporter-list':
+          return <SupporterListPage onNavigate={handleNavigate} currentUserId={user.id} />;
+        case 'find-share':
+          return <FindSharePage onNavigate={handleNavigate} currentUserId={user.id} />;
+        case 'share-detail':
+          return <ShareDetailPage onNavigate={handleNavigate} requestId={selectedJobId} />;
         default:
           return <EmployeeHome onNavigate={handleNavigate} />;
       }

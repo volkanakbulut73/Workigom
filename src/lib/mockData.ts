@@ -640,8 +640,8 @@ export const mockUsers: User[] = [
   }
 ];
 
-// Food Donation Types and Mock Data
-export interface FoodDonationRequest {
+// Menu Market Types and Mock Data
+export interface MenuShareRequest {
   id: string;
   userId: string;
   userName: string;
@@ -650,11 +650,11 @@ export interface FoodDonationRequest {
   minSupportRate: number;
   userPayAmount: number;
   description: string;
-  status: 'waiting' | 'donor_matched' | 'payment_pending' | 'qr_pending' | 'qr_uploaded' | 'payment_confirmed' | 'completed';
+  status: 'waiting' | 'supporter_matched' | 'payment_pending' | 'qr_pending' | 'qr_uploaded' | 'payment_confirmed' | 'completed';
   postedAt: string;
-  donorId?: string;
-  donorName?: string;
-  donorInitials?: string;
+  supporterId?: string;
+  supporterName?: string;
+  supporterInitials?: string;
   supportRate?: number;
   isFullSupport?: boolean;
   qrImageUrl?: string;
@@ -669,11 +669,11 @@ export interface UserProfile {
   userId: string;
   userName: string;
   goldenHeartCount: number;
-  totalDonationsGiven: number;
-  totalDonationsReceived: number;
+  totalSharesGiven: number;
+  totalSharesReceived: number;
 }
 
-export const mockFoodDonationRequests: FoodDonationRequest[] = [
+export const mockMenuShareRequests: MenuShareRequest[] = [
   {
     id: '1',
     userId: 'IND001',

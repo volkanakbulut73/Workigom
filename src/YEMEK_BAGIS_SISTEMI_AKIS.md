@@ -1,15 +1,15 @@
-# 🍽️ Workigom Yemek Bağış Sistemi - Akış Dokümantasyonu
+# 🍽️ Workigom Menü Market Paylaşım Sistemi - Akış Dokümantasyonu
 
 ## 📋 Genel Bakış
 
-Workigom Yemek Bağış Sistemi, ihtiyaç sahibi kullanıcıların yemek masrafları için destek talep etmelerini ve diğer kullanıcıların bu taleplere %20 veya %100 oranında destek vermelerini sağlayan kapsamlı bir sistemdir.
+Workigom Menü Market Paylaşım Sistemi, ihtiyaç sahibi kullanıcıların yemek masrafları için paylaşım talep etmelerini ve diğer kullanıcıların bu taleplere %20 veya %100 oranında paylaşım yapmalarını sağlayan kapsamlı bir sistemdir.
 
 ### 🎯 Temel Özellikler
 
-- **İki Kullanıcı Rolü:** Destek Arayan ve Bağışçı
-- **İki Destek Oranı:** %20 (Kısmi Destek) ve %100 "Buda Benden" (Tam Destek)
+- **İki Kullanıcı Rolü:** Paylaşımdan Yararlanan ve Destekçi
+- **İki Paylaşım Oranı:** %20 (Kısmi Paylaşım) ve %100 "Buda Benden" (Tam Paylaşım)
 - **QR Kod Sistemi:** Güvenli ödeme için 300 saniyelik QR kod
-- **Altın Kalp Badge Sistemi:** Bağışçıları ödüllendirme
+- **Altın Kalp Badge Sistemi:** Destekçileri ödüllendirme
 - **Gerçek Zamanlı Bildirimler:** Tüm adımlarda anlık bilgilendirme
 - **İşlem Takibi:** Her iki taraf için detaylı adım takibi
 
@@ -17,19 +17,19 @@ Workigom Yemek Bağış Sistemi, ihtiyaç sahibi kullanıcıların yemek masrafl
 
 ## 👥 Roller ve Sorumluluklar
 
-### 🎓 Destek Arayan (Receiver/Beneficiary)
-- Yemek masrafı için destek talebi oluşturur
+### 🎓 Paylaşımdan Yararlanan (Beneficiary)
+- Yemek masrafı için paylaşım talebi oluşturur
 - Menü tutarını ve açıklamayı belirler
-- Bağışçı eşleşmesini bekler
-- %20 desteğinde kendi payını öder (%80)
-- %100 desteğinde ödeme yapmaz
+- Destekçi eşleşmesini bekler
+- %20 paylaşımında kendi payını öder (%80)
+- %100 paylaşımında ödeme yapmaz
 - QR kod ile restoranda ödeme yapar
-- Ödeme sonrası bağışçıya teşekkür eder
+- Ödeme sonrası destekçiye teşekkür eder
 
-### 💛 Bağışçı (Donor)
-- Bekleyen destek taleplerini görüntüler
-- %20 veya %100 destek oranını seçer
-- %20 desteğinde alıcının ödemesini bekler
+### 💛 Destekçi (Supporter)
+- Bekleyen paylaşım taleplerini görüntüler
+- %20 veya %100 paylaşım oranını seçer
+- %20 paylaşımında yararlanıcının ödemesini bekler
 - QR kod oluşturur ve yükler
 - Ödeme tamamlandığında bildirim alır
 - Altın Kalp badge kazanır

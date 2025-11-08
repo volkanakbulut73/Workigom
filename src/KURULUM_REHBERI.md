@@ -95,7 +95,7 @@ Tarayıcınızda `http://localhost:5173/` adresini açın.
 
 ## 🧪 Test Senaryoları
 
-### Yemek Bağışı Testi
+### Menü Market Paylaşım Testi
 
 **2 farklı tarayıcı penceresi açın:**
 
@@ -108,7 +108,7 @@ Tarayıcınızda `http://localhost:5173/` adresini açın.
 **Pencere 2 - Bağışçı (Ayşe):**
 1. `ayse.demir@email.com` / `ayse123` ile giriş yapın
 2. "Birlikte Paylaşıyoruz 🍽️" kartına tıklayın
-3. "Yemek Bağışçısı Ol" → Ahmet'in talebini görün
+3. "Destekçi Ol" → Ahmet'in talebini görün
 4. "Destek Ol" → %20 veya %100 seçin
 5. "Desteği Onayla"
 
@@ -229,7 +229,7 @@ workigom/
 
 Proje içindeki dokümantasyon:
 - `README.md` - Genel bakış
-- `YEMEK_BAGIS_TEST_REHBERI.md` - Yemek bağışı test rehberi
+- `MENU_MARKET_SISTEMI_AKIS.md` - Menü Market paylaşım sistemi rehberi
 - `TEST_KULLANICI_BILGILERI.md` - Test kullanıcı listesi
 - `GOOGLE_OAUTH_ENTEGRASYON_REHBERI.md` - OAuth entegrasyonu
 
@@ -245,7 +245,7 @@ Proje içindeki dokümantasyon:
 1. ✅ Uygulamayı başarıyla çalıştırdınız
 2. 📱 Mobil ve desktop görünümleri test edin
 3. 🧪 Test kullanıcıları ile giriş yapın
-4. 🍽️ Yemek bağışı akışını test edin
+4. 🍽️ Menü Market paylaşım akışını test edin
 5. 💼 Acil iş sistemini keşfedin
 6. 📖 Dokümantasyonu okuyun
 

@@ -909,8 +909,8 @@ ORDER BY date DESC;
 ```typescript
 {
   "targetType": "ALL_INDIVIDUALS",
-  "title": "🎉 Yeni Özellik: Yemek Bağışı",
-  "message": "Artık ihtiyaç sahibi çalışanlara yemek bağışı yapabilirsiniz! Detaylar için tıklayın.",
+  "title": "🎉 Yeni Özellik: Menü Market Paylaşımı",
+  "message": "Artık ihtiyaç sahibi çalışanlara menü paylaşımı yapabilirsiniz! Detaylar için tıklayın.",
   "link": "/food-donation"
 }
 ```
