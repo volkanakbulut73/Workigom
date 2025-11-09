@@ -50,6 +50,26 @@ try {
   databaseStatus = "error";
 }
 
+// Root endpoint
+app.get("/", (c) => {
+  return c.json({
+    success: true,
+    message: "Welcome to Workigom API",
+    version: "1.0.0",
+    endpoints: {
+      health: "/api/health",
+      auth: "/api/auth",
+      users: "/api/users",
+      jobs: "/api/jobs",
+      applications: "/api/applications",
+      donations: "/api/donations",
+      messages: "/api/messages",
+      notifications: "/api/notifications",
+      seed: "/api/seed (requires authentication)"
+    }
+  });
+});
+
 // Health check endpoint (Render.com default)
 app.get("/make-server-018e1998/health", (c) => {
   return c.json({ 
@@ -70,6 +90,58 @@ app.get("/api/health", (c) => {
     supabase: supabase ? "connected" : "disconnected",
     warning: databaseStatus !== "connected" ? "Database connection issue" : undefined
   });
+});
+
+// ENV Check endpoint - Security: Only checks presence (true/false), never logs actual values
+app.get("/make-server-018e1998/_env-check", (c) => {
+  try {
+    const checks = {
+      HAS_SUPABASE_URL: !!Deno.env.get("SUPABASE_URL"),
+      HAS_SUPABASE_ANON_KEY: !!Deno.env.get("SUPABASE_ANON_KEY"),
+      HAS_SUPABASE_SERVICE_ROLE_KEY: !!Deno.env.get("SUPABASE_SERVICE_ROLE_KEY"),
+      HAS_SUPABASE_DB_URL: !!Deno.env.get("SUPABASE_DB_URL"),
+      HAS_PORT: !!Deno.env.get("PORT"),
+      HAS_DATABASE_URL: !!Deno.env.get("DATABASE_URL"), // Should be false!
+    };
+    
+    console.log("ENV_CHECK:", checks);
+    
+    return c.json({ 
+      ok: true, 
+      checks,
+      message: "Environment variables check (true = exists, false = missing)",
+      warning: checks.HAS_DATABASE_URL ? "⚠️ DATABASE_URL should NOT exist! This project uses Supabase." : undefined
+    });
+  } catch (err) {
+    console.error("ENV_CHECK_ERROR:", err);
+    return c.json({ ok: false, error: "Failed to check environment variables" }, 500);
+  }
+});
+
+// Alternative ENV check endpoint (shorter path)
+app.get("/api/_env-check", (c) => {
+  try {
+    const checks = {
+      HAS_SUPABASE_URL: !!Deno.env.get("SUPABASE_URL"),
+      HAS_SUPABASE_ANON_KEY: !!Deno.env.get("SUPABASE_ANON_KEY"),
+      HAS_SUPABASE_SERVICE_ROLE_KEY: !!Deno.env.get("SUPABASE_SERVICE_ROLE_KEY"),
+      HAS_SUPABASE_DB_URL: !!Deno.env.get("SUPABASE_DB_URL"),
+      HAS_PORT: !!Deno.env.get("PORT"),
+      HAS_DATABASE_URL: !!Deno.env.get("DATABASE_URL"), // Should be false!
+    };
+    
+    console.log("ENV_CHECK:", checks);
+    
+    return c.json({ 
+      ok: true, 
+      checks,
+      message: "Environment variables check (true = exists, false = missing)",
+      warning: checks.HAS_DATABASE_URL ? "⚠️ DATABASE_URL should NOT exist! This project uses Supabase." : undefined
+    });
+  } catch (err) {
+    console.error("ENV_CHECK_ERROR:", err);
+    return c.json({ ok: false, error: "Failed to check environment variables" }, 500);
+  }
 });
 
 // Get port from environment variable (Render.com uses PORT)
