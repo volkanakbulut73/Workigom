@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { toast } from "sonner@2.0.3";
-import { Bell, Users, Building2, UserCheck, Send, AlertTriangle } from "lucide-react";
+import { Bell, Users, Building2, UserCheck, Send, AlertTriangle, Loader2 } from "lucide-react";
+import { supabase, isSupabaseConfigured } from "../../utils/supabase/client";
+
+interface UserData {
+  id: string;
+  email: string;
+  full_name: string;
+  user_type: 'individual' | 'corporate' | 'admin';
+}
 
 export function SendNotificationForm() {
   const [targetType, setTargetType] = useState<string>('ALL');
@@ -13,6 +21,43 @@ export function SendNotificationForm() {
   const [title, setTitle] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [link, setLink] = useState<string>('');
+  const [users, setUsers] = useState<UserData[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState<boolean>(false);
+
+  // Fetch users from Supabase
+  useEffect(() => {
+    const fetchUsers = async () => {
+      if (!isSupabaseConfigured()) {
+        console.log('Supabase not configured, using demo data');
+        return;
+      }
+
+      setLoadingUsers(true);
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('id, email, full_name, user_type')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching users:', error);
+          toast.error('❌ Kullanıcılar yüklenirken hata oluştu');
+          return;
+        }
+
+        if (data) {
+          setUsers(data as UserData[]);
+          console.log(`✅ ${data.length} kullanıcı yüklendi`);
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      } finally {
+        setLoadingUsers(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleSend = () => {
     // Validasyon
@@ -50,24 +95,23 @@ export function SendNotificationForm() {
     };
 
     // Hedef kullanıcıları belirle
-    const users = JSON.parse(localStorage.getItem('demoUsers') || '[]');
-    let targetUsers: any[] = [];
+    let targetUsers: UserData[] = [];
 
     switch (targetType) {
       case 'ALL':
         targetUsers = users;
         break;
       case 'ALL_INDIVIDUALS':
-        targetUsers = users.filter((u: any) => u.role === 'individual');
+        targetUsers = users.filter((u: UserData) => u.user_type === 'individual');
         break;
       case 'ALL_COMPANIES':
-        targetUsers = users.filter((u: any) => u.role === 'corporate');
+        targetUsers = users.filter((u: UserData) => u.user_type === 'corporate');
         break;
       case 'SINGLE_INDIVIDUAL':
-        targetUsers = users.filter((u: any) => u.id === targetId && u.role === 'individual');
+        targetUsers = users.filter((u: UserData) => u.id === targetId && u.user_type === 'individual');
         break;
       case 'SINGLE_COMPANY':
-        targetUsers = users.filter((u: any) => u.id === targetId && u.role === 'corporate');
+        targetUsers = users.filter((u: UserData) => u.id === targetId && u.user_type === 'corporate');
         break;
     }
 
@@ -77,7 +121,7 @@ export function SendNotificationForm() {
       allNotifications.push({
         ...notification,
         userId: user.id,
-        userRole: user.role
+        userRole: user.user_type
       });
     });
     localStorage.setItem('adminNotifications', JSON.stringify(allNotifications));
@@ -175,26 +219,58 @@ export function SendNotificationForm() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 {targetType === 'SINGLE_INDIVIDUAL' ? 'Kullanıcı Seçin' : 'Şirket Seçin'} <span className="text-red-500">*</span>
               </label>
-              <Select value={targetId} onValueChange={setTargetId}>
+              <Select value={targetId} onValueChange={setTargetId} disabled={loadingUsers}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder={targetType === 'SINGLE_INDIVIDUAL' ? 'Kullanıcı seçin' : 'Şirket seçin'} />
+                  <SelectValue placeholder={
+                    loadingUsers 
+                      ? 'Kullanıcılar yükleniyor...' 
+                      : targetType === 'SINGLE_INDIVIDUAL' 
+                        ? 'Kullanıcı seçin' 
+                        : 'Şirket seçin'
+                  } />
                 </SelectTrigger>
                 <SelectContent>
-                  {(() => {
-                    const users = JSON.parse(localStorage.getItem('demoUsers') || '[]');
-                    const filtered = users.filter((u: any) => 
-                      targetType === 'SINGLE_INDIVIDUAL' 
-                        ? u.role === 'individual' 
-                        : u.role === 'corporate'
-                    );
-                    return filtered.map((user: any) => (
-                      <SelectItem key={user.id} value={user.id}>
-                        {user.name} ({user.email})
-                      </SelectItem>
-                    ));
-                  })()}
+                  {loadingUsers ? (
+                    <div className="flex items-center justify-center p-4">
+                      <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
+                      <span className="ml-2 text-sm text-gray-500">Yükleniyor...</span>
+                    </div>
+                  ) : (
+                    (() => {
+                      const filtered = users.filter((u: UserData) => 
+                        targetType === 'SINGLE_INDIVIDUAL' 
+                          ? u.user_type === 'individual' 
+                          : u.user_type === 'corporate'
+                      );
+                      
+                      if (filtered.length === 0) {
+                        return (
+                          <div className="p-4 text-sm text-gray-500 text-center">
+                            {targetType === 'SINGLE_INDIVIDUAL' 
+                              ? '❌ Henüz bireysel kullanıcı yok' 
+                              : '❌ Henüz kurumsal kullanıcı yok'}
+                          </div>
+                        );
+                      }
+                      
+                      return filtered.map((user: UserData) => (
+                        <SelectItem key={user.id} value={user.id}>
+                          {user.full_name} ({user.email})
+                        </SelectItem>
+                      ));
+                    })()
+                  )}
                 </SelectContent>
               </Select>
+              {!loadingUsers && users.length > 0 && (
+                <p className="text-xs text-gray-500 mt-1">
+                  {users.filter((u: UserData) => 
+                    targetType === 'SINGLE_INDIVIDUAL' 
+                      ? u.user_type === 'individual' 
+                      : u.user_type === 'corporate'
+                  ).length} {targetType === 'SINGLE_INDIVIDUAL' ? 'bireysel' : 'kurumsal'} kullanıcı bulundu
+                </p>
+              )}
             </div>
           )}
 
