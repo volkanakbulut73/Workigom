@@ -68,6 +68,7 @@ function AppContent() {
   const [appView, setAppView] = useState<AppView>('landing');
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [selectedJobId, setSelectedJobId] = useState<string>('');
+  const [isAdminLogin, setIsAdminLogin] = useState(false); // Track if admin login
 
   // Note: SetupChecker component will show warning if needed
 
@@ -91,10 +92,12 @@ function AppContent() {
   }, [user, profile, loading]);
 
   const handleGetStarted = () => {
+    setIsAdminLogin(false);
     setAppView('login');
   };
 
   const handleBackToLanding = () => {
+    setIsAdminLogin(false);
     setAppView('landing');
   };
 
@@ -114,6 +117,7 @@ function AppContent() {
     await signOut();
     setAppView('landing');
     setCurrentPage('home');
+    setIsAdminLogin(false);
     toast.success('Çıkış yapıldı');
   };
 
@@ -130,6 +134,7 @@ function AppContent() {
   }
 
   const handleAdminLogin = () => {
+    setIsAdminLogin(true);
     setAppView('login');
   };
 
@@ -145,7 +150,7 @@ function AppContent() {
   if (appView === 'login') {
     return (
       <>
-        <LoginScreen onLoginSuccess={handleLoginSuccess} onBack={handleBackToLanding} />
+        <LoginScreen onLoginSuccess={handleLoginSuccess} onBack={handleBackToLanding} isAdminLogin={isAdminLogin} />
         <Toaster />
       </>
     );
@@ -155,7 +160,7 @@ function AppContent() {
   if (!user || !profile) {
     return (
       <>
-        <LoginScreen onLoginSuccess={handleLoginSuccess} onBack={handleBackToLanding} />
+        <LoginScreen onLoginSuccess={handleLoginSuccess} onBack={handleBackToLanding} isAdminLogin={isAdminLogin} />
         <Toaster />
       </>
     );

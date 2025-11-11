@@ -10,11 +10,15 @@ import { useAuth } from "../contexts/AuthContext";
 interface LoginScreenProps {
   onLoginSuccess: () => void;
   onBack: () => void;
+  isAdminLogin?: boolean; // New prop to indicate admin login
 }
 
 type AuthMode = 'role-select' | 'login' | 'register';
 
-export function LoginScreen({ onLoginSuccess, onBack }: LoginScreenProps) {
+// Admin email constant
+const ADMIN_EMAIL = 'cicicars.com@gmail.com';
+
+export function LoginScreen({ onLoginSuccess, onBack, isAdminLogin }: LoginScreenProps) {
   const { signIn, signUp, isSupabaseReady } = useAuth();
   const [authMode, setAuthMode] = useState<AuthMode>('role-select');
   const [selectedRole, setSelectedRole] = useState<'individual' | 'corporate' | null>(null);
@@ -25,6 +29,14 @@ export function LoginScreen({ onLoginSuccess, onBack }: LoginScreenProps) {
   const [companyName, setCompanyName] = useState('');
   const [taxNumber, setTaxNumber] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Skip role-select if admin login
+  useEffect(() => {
+    if (isAdminLogin) {
+      setAuthMode('login');
+      // Don't set selectedRole for admin
+    }
+  }, [isAdminLogin]);
 
   // Show warning if Supabase is not configured
   useEffect(() => {
@@ -274,6 +286,95 @@ export function LoginScreen({ onLoginSuccess, onBack }: LoginScreenProps) {
                 Ana Sayfaya Dön
               </Button>
             </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ADMIN LOGIN SCREEN - Special screen for admin
+  if (isAdminLogin && authMode === 'login') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#012840] via-[#0367A6] to-[#3F9BBF] flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <Button
+            variant="ghost"
+            onClick={onBack}
+            className="mb-4 text-white hover:bg-white/10"
+          >
+            <ArrowLeft className="w-5 h-5 mr-2" />
+            Ana Sayfaya Dön
+          </Button>
+
+          <div className="bg-white rounded-3xl shadow-2xl p-8 border-2 border-white">
+            {/* Admin Icon */}
+            <div className="text-center mb-8">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#012840] to-[#0367A6] rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <h2 className="text-3xl mb-2 bg-gradient-to-r from-[#012840] to-[#0367A6] bg-clip-text text-transparent">Admin Girişi</h2>
+              <p className="text-gray-600">
+                Yönetici paneline hoş geldiniz
+              </p>
+            </div>
+
+            {/* Admin Login Info */}
+            <div className="mb-6 bg-blue-50 border-2 border-blue-200 rounded-2xl p-4">
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+                <div className="text-sm text-gray-700">
+                  <strong>Admin hesabınızla giriş yapın.</strong>
+                  <br />
+                  Admin email: <code className="bg-white px-2 py-0.5 rounded text-xs">{ADMIN_EMAIL}</code>
+                </div>
+              </div>
+            </div>
+
+            <form onSubmit={handleEmailLogin} className="space-y-4">
+              <div>
+                <Label htmlFor="email">Admin E-posta</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder={ADMIN_EMAIL}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={loading}
+                  className="border-2"
+                />
+              </div>
+              <div>
+                <Label htmlFor="password">Şifre</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={loading}
+                  className="border-2"
+                />
+              </div>
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r from-[#012840] to-[#0367A6] hover:from-[#0367A6] hover:to-[#012840] shadow-lg"
+                disabled={loading}
+              >
+                {loading ? 'Giriş yapılıyor...' : '🔐 Admin Girişi'}
+              </Button>
+            </form>
+          </div>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-white/80">
+              🔒 Güvenli admin erişimi
+            </p>
           </div>
         </div>
       </div>
