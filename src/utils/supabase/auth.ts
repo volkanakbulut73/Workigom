@@ -177,16 +177,45 @@ export const updateProfile = async (userId: string, updates: any) => {
  */
 export const resetPassword = async (email: string) => {
   try {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    console.log('🔄 [DEBUG] Starting password reset for:', email);
+    console.log('🔄 [DEBUG] Redirect URL:', `${window.location.origin}/reset-password`);
+    
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/reset-password`,
     });
 
-    if (error) throw error;
+    // DETAILED DEBUG OUTPUT
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('🔍 [DEBUG] Password Reset Response:');
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('Email:', email);
+    console.log('Data:', data);
+    console.log('Error:', error);
+    
+    if (error) {
+      console.error('❌ [DEBUG] Supabase returned error:');
+      console.error('  Error object:', JSON.stringify(error, null, 2));
+      console.error('  Error message:', error.message);
+      console.error('  Error status:', error.status);
+      console.error('  Error code:', error.code);
+      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      throw error;
+    }
+
+    console.log('✅ [DEBUG] Success - Supabase accepted request');
+    console.log('✅ [DEBUG] Response data:', JSON.stringify(data, null, 2));
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
     toast.success('Şifre sıfırlama bağlantısı e-posta adresinize gönderildi');
-    return { success: true };
+    return { success: true, data };
   } catch (error: any) {
-    console.error('Reset password error:', error);
+    console.error('❌ [DEBUG] Exception caught in resetPassword:');
+    console.error('  Error type:', typeof error);
+    console.error('  Error:', error);
+    console.error('  Error message:', error?.message);
+    console.error('  Error stack:', error?.stack);
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    
     toast.error(error.message || 'Şifre sıfırlama sırasında bir hata oluştu');
     return { success: false, error };
   }
