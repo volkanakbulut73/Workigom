@@ -69,32 +69,28 @@ workigom/
     └── _redirects       # SPA routing için
 ```
 
-## 🚨 Sık Karşılaşılan Sorunlar
+## 🔧 Sık Karşılaşılan Sorunlar
 
-### 1. Admin Login Hatası
-**Sorun:** "Duplicate key value violates unique constraint"
-**Çözüm:** Admin zaten mevcut, signup yerine login kullanın
-- Landing page → "Admin Girişi"
-- Email: `cicicars.com@gmail.com`
-- Şifre girin ve giriş yapın
+### 1. "Duplicate key value" Hatası
+**Sorun:** Email zaten kayıtlı  
+**Çözüm:** ✅ Email kontrol mekanizması eklendi - kayıt öncesi email kontrolü yapılıyor
 
-### 2. _redirects Dosyası Hatası
-**Sorun:** _redirects klasör olarak oluşuyor
-**Çözüm:** `/public/_redirects` dosya olarak oluşturuldu, düzeltildi
+### 2. Admin Login Hatası
+**Sorun:** Admin signup duplicate error  
+**Çözüm:** ✅ Özel admin login ekranı oluşturuldu - landing page → Admin Girişi
 
-### 3. 401 Authentication Hatası
-**Sorun:** Token expired veya invalid
-**Çözüm:** 
-1. Browser Console → `localStorage.clear()`
-2. Sayfayı yenileyin
-3. Tekrar login yapın
+### 3. Session/Token Sorunları
+**Sorun:** Login sonrası token bulunamıyor  
+**Çözüm:** ✅ Auth akışı iyileştirildi - PKCE flow, explicit storage, event-based handling
 
-### 4. Supabase Bağlantı Hatası
-**Sorun:** "Supabase not configured"
-**Çözüm:**
-1. `.env` dosyasını kontrol edin
-2. Environment variables'ı Render.com'da ayarlayın
-3. Dev server'ı yeniden başlatın
+**Debug Tools:**
+```javascript
+// Browser console'da
+window.debugAuth()          // Full auth debug
+window.debugSession()       // Session check
+window.debugLocalStorage()  // Storage check
+window.clearAuthData()      // Clear all auth data
+```
 
 ## 📝 GitHub Workflow
 

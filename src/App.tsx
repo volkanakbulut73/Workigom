@@ -9,6 +9,9 @@ import { DesktopSidebar } from "./components/DesktopSidebar";
 import { SetupChecker } from "./components/SetupChecker";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
+// Debug utilities (available in console)
+import "./utils/debugAuth";
+
 // Employee Components
 import { EmployeeHome } from "./components/employee/EmployeeHome";
 import { UrgentJobsPage } from "./components/employee/UrgentJobsPage";

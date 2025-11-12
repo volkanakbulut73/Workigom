@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from '../utils/supabase/client';
 import { Database } from '../utils/supabase/types';
@@ -44,6 +44,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSupabaseReady] = useState(isSupabaseConfigured());
+  
+  // Use ref instead of boolean for mounted check (React best practice)
+  const isMountedRef = useRef(true);
 
   // Fetch user profile
   const fetchProfile = async (userId: string) => {
@@ -55,7 +58,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .single();
 
       if (error) throw error;
-      setProfile(data);
+      
+      // Only update state if component is still mounted
+      if (isMountedRef.current) {
+        setProfile(data);
+      }
       return data;
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -73,26 +80,89 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
+    const initializeAuth = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Session fetch error:', error);
+          if (isMountedRef.current) {
+            setUser(null);
+            setProfile(null);
+            setLoading(false);
+          }
+          return;
+        }
+
+        if (session?.user) {
+          console.log('✅ Session found:', session.user.id);
+          if (isMountedRef.current) {
+            setUser(session.user);
+            // Wait for profile to be fetched before setting loading to false
+            await fetchProfile(session.user.id);
+          }
+        } else {
+          console.log('ℹ️ No active session');
+        }
+        
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        if (isMountedRef.current) {
+          setLoading(false);
+        }
       }
-      setLoading(false);
-    });
+    };
+
+    initializeAuth();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        await fetchProfile(session.user.id);
-      } else {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('🔄 Auth state changed:', event);
+      
+      if (!isMountedRef.current) return;
+
+      // Handle different auth events
+      if (event === 'SIGNED_IN') {
+        console.log('✅ User signed in:', session?.user?.id);
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          await fetchProfile(session.user.id);
+        }
+      } else if (event === 'SIGNED_OUT') {
+        console.log('👋 User signed out');
+        setUser(null);
         setProfile(null);
+      } else if (event === 'TOKEN_REFRESHED') {
+        console.log('🔄 Token refreshed');
+        // User object might have updated
+        setUser(session?.user ?? null);
+      } else if (event === 'USER_UPDATED') {
+        console.log('📝 User updated');
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          await fetchProfile(session.user.id);
+        }
+      } else {
+        // Handle other events (PASSWORD_RECOVERY, etc.)
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          await fetchProfile(session.user.id);
+        } else {
+          setProfile(null);
+        }
       }
+      
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      // Cleanup: mark as unmounted and unsubscribe
+      isMountedRef.current = false;
+      subscription.unsubscribe();
+    };
   }, [isSupabaseReady]);
 
   // Sign up

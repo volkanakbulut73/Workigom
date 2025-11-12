@@ -11,10 +11,25 @@ export const isSupabaseConfigured = (): boolean => {
   return !!(projectId && publicAnonKey && projectId !== 'placeholder');
 };
 
+// Check if we're running in browser (client-side)
+const isBrowser = typeof window !== 'undefined';
+
+// Storage key for Supabase auth token
+const AUTH_STORAGE_KEY = `sb-${projectId}-auth-token`;
+
+// Validate storage key format (ensure projectId is valid)
+if (isSupabaseConfigured() && projectId.includes('${')) {
+  console.error('❌ Invalid projectId - contains template literal:', projectId);
+  console.error('Please check /utils/supabase/info.tsx');
+}
+
 // Log configuration status
 if (isSupabaseConfigured()) {
   console.log('✅ Supabase bağlantısı başarılı');
   console.log(`📡 Supabase URL: ${supabaseUrl}`);
+  if (import.meta.env.DEV) {
+    console.log(`🔑 Storage key: ${AUTH_STORAGE_KEY}`);
+  }
 } else {
   console.warn('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.warn('⚠️  SUPABASE YAPILANDIRILMADI');
@@ -25,12 +40,15 @@ if (isSupabaseConfigured()) {
   console.warn('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 }
 
-// Create Supabase client
+// Create Supabase client with improved settings
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
-    persistSession: isSupabaseConfigured(),
+    persistSession: isSupabaseConfigured() && isBrowser, // Only persist in browser
     autoRefreshToken: isSupabaseConfigured(),
-    detectSessionInUrl: isSupabaseConfigured(),
+    detectSessionInUrl: isSupabaseConfigured() && isBrowser, // Only detect in browser
+    storage: isBrowser ? window.localStorage : undefined, // Explicit storage
+    storageKey: AUTH_STORAGE_KEY, // Explicit key
+    flowType: 'pkce', // Use PKCE flow for better security
   },
   realtime: {
     params: {
@@ -39,29 +57,5 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-// Helper function to get current user
-export const getCurrentUser = async () => {
-  if (!isSupabaseConfigured()) {
-    return null;
-  }
-  
-  const { data: { user }, error } = await supabase.auth.getUser();
-  if (error) throw error;
-  return user;
-};
-
-// Helper function to get user profile
-export const getUserProfile = async (userId: string) => {
-  if (!isSupabaseConfigured()) {
-    throw new Error('Supabase is not configured');
-  }
-  
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('id', userId)
-    .single();
-  
-  if (error) throw error;
-  return data;
-};
+// Export storage key for debugging utilities
+export const getAuthStorageKey = () => AUTH_STORAGE_KEY;
