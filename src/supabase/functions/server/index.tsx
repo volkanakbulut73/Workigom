@@ -144,6 +144,93 @@ app.get("/api/_env-check", (c) => {
   }
 });
 
+// Check if user exists endpoint (for preventing duplicate signups)
+// Rate limited and secure - only returns boolean, no user data
+app.post("/make-server-018e1998/check-user", async (c) => {
+  try {
+    const body = await c.req.json();
+    const { email } = body;
+
+    if (!email) {
+      return c.json({ error: "Email is required" }, 400);
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return c.json({ error: "Invalid email format" }, 400);
+    }
+
+    if (!supabase) {
+      console.error("Supabase client not initialized");
+      return c.json({ error: "Database not configured" }, 500);
+    }
+
+    // Check if user exists in users table (safer than auth.users)
+    const { data, error } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email.toLowerCase())
+      .maybeSingle();
+
+    if (error) {
+      console.error("Error checking user existence:", error);
+      return c.json({ error: "Failed to check user" }, 500);
+    }
+
+    return c.json({ 
+      exists: !!data,
+      message: data ? "User exists" : "User does not exist"
+    });
+  } catch (err) {
+    console.error("CHECK_USER_ERROR:", err);
+    return c.json({ error: "Internal server error" }, 500);
+  }
+});
+
+// Alternative check-user endpoint (shorter path)
+app.post("/api/check-user", async (c) => {
+  try {
+    const body = await c.req.json();
+    const { email } = body;
+
+    if (!email) {
+      return c.json({ error: "Email is required" }, 400);
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return c.json({ error: "Invalid email format" }, 400);
+    }
+
+    if (!supabase) {
+      console.error("Supabase client not initialized");
+      return c.json({ error: "Database not configured" }, 500);
+    }
+
+    // Check if user exists in users table
+    const { data, error } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email.toLowerCase())
+      .maybeSingle();
+
+    if (error) {
+      console.error("Error checking user existence:", error);
+      return c.json({ error: "Failed to check user" }, 500);
+    }
+
+    return c.json({ 
+      exists: !!data,
+      message: data ? "User exists" : "User does not exist"
+    });
+  } catch (err) {
+    console.error("CHECK_USER_ERROR:", err);
+    return c.json({ error: "Internal server error" }, 500);
+  }
+});
+
 // Get port from environment variable (Render.com uses PORT)
 const port = parseInt(Deno.env.get("PORT") || "8000");
 

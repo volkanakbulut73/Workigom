@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured } from '../utils/supabase/client';
 import { Database } from '../utils/supabase/types';
+import { checkUserExists } from '../utils/checkUserExists';
 
 type UserProfile = Database['public']['Tables']['users']['Row'];
 

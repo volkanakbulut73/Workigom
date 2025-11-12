@@ -150,7 +150,11 @@ function AppContent() {
   if (appView === 'login') {
     return (
       <>
-        <LoginScreen onLoginSuccess={handleLoginSuccess} onBack={handleBackToLanding} isAdminLogin={isAdminLogin} />
+        <LoginScreen 
+          onLoginSuccess={handleLoginSuccess} 
+          onBack={handleBackToLanding}
+          isAdminLogin={isAdminLogin}
+        />
         <Toaster />
       </>
     );
@@ -160,7 +164,11 @@ function AppContent() {
   if (!user || !profile) {
     return (
       <>
-        <LoginScreen onLoginSuccess={handleLoginSuccess} onBack={handleBackToLanding} isAdminLogin={isAdminLogin} />
+        <LoginScreen 
+          onLoginSuccess={handleLoginSuccess} 
+          onBack={handleBackToLanding}
+          isAdminLogin={isAdminLogin}
+        />
         <Toaster />
       </>
     );

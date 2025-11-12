@@ -6,6 +6,7 @@ import { Label } from "./ui/label";
 import { useState, useEffect } from "react";
 import { toast } from "sonner@2.0.3";
 import { useAuth } from "../contexts/AuthContext";
+import { checkUserExists } from "../utils/checkUserExists";
 
 interface LoginScreenProps {
   onLoginSuccess: () => void;
@@ -109,6 +110,27 @@ export function LoginScreen({ onLoginSuccess, onBack, isAdminLogin }: LoginScree
     setLoading(true);
 
     try {
+      // FIRST: Check if user already exists
+      console.log('Checking if user exists:', email);
+      const userExists = await checkUserExists(email);
+      
+      if (userExists) {
+        setLoading(false);
+        toast.error('Bu e-posta zaten kayıtlı!', {
+          description: 'Giriş yapmak ister misiniz?',
+          action: {
+            label: 'Giriş Yap',
+            onClick: () => {
+              setAuthMode('login');
+              // Keep email filled
+            }
+          },
+          duration: 6000,
+        });
+        return;
+      }
+
+      // User doesn't exist, proceed with signup
       const result = await signUp({
         email,
         password,
@@ -127,9 +149,23 @@ export function LoginScreen({ onLoginSuccess, onBack, isAdminLogin }: LoginScree
           onLoginSuccess();
         }, 1000);
       } else {
-        toast.error('Kayıt yapılamadı', {
-          description: result.error?.message || 'Bir hata oluştu'
-        });
+        // Check if it's a duplicate key error
+        if (result.error?.message?.includes('duplicate') || result.error?.message?.includes('already exists')) {
+          toast.error('Bu e-posta zaten kayıtlı!', {
+            description: 'Giriş yapmak ister misiniz?',
+            action: {
+              label: 'Giriş Yap',
+              onClick: () => {
+                setAuthMode('login');
+              }
+            },
+            duration: 6000,
+          });
+        } else {
+          toast.error('Kayıt yapılamadı', {
+            description: result.error?.message || 'Bir hata oluştu'
+          });
+        }
       }
     } catch (error) {
       toast.error('Bir hata oluştu', {
