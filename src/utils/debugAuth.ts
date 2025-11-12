@@ -9,7 +9,7 @@
  */
 
 import { supabase } from './supabase/client';
-import { projectId } from './supabase/info';
+import { getAuthStorageKey, validateStorageData, isDevelopmentMode } from './supabase/client';
 
 /**
  * Debug localStorage to check what auth data is stored
@@ -22,9 +22,13 @@ export const debugLocalStorage = () => {
 
   console.group('🔍 LocalStorage Debug');
   
-  // Expected Supabase key
-  const expectedKey = `sb-${projectId}-auth-token`;
+  // Expected Supabase key (use exported helper)
+  const expectedKey = getAuthStorageKey();
   console.log('Expected key:', expectedKey);
+  
+  // Validate storage data structure
+  const validation = validateStorageData();
+  console.log('\n📊 Storage validation:', validation);
   
   // List all localStorage keys
   console.log('\n📋 All localStorage keys:');
@@ -149,13 +153,8 @@ export const clearAuthData = async () => {
   }
 };
 
-// Check if we're in development mode (safe check)
-const isDevelopment = typeof import.meta !== 'undefined' && 
-                      import.meta.env && 
-                      import.meta.env.DEV === true;
-
 // Expose to window ONLY in development
-if (typeof window !== 'undefined' && isDevelopment) {
+if (typeof window !== 'undefined' && isDevelopmentMode()) {
   (window as any).debugAuth = debugAuth;
   (window as any).debugSession = debugSession;
   (window as any).debugLocalStorage = debugLocalStorage;
@@ -166,6 +165,6 @@ if (typeof window !== 'undefined' && isDevelopment) {
   console.log('  - window.debugSession() - Check session state');
   console.log('  - window.debugLocalStorage() - Check localStorage');
   console.log('  - window.clearAuthData() - Clear all auth data');
-} else if (typeof window !== 'undefined' && !isDevelopment) {
+} else if (typeof window !== 'undefined' && !isDevelopmentMode()) {
   console.log('ℹ️ Auth debug tools disabled in production');
 }
