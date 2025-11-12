@@ -23,11 +23,16 @@ if (isSupabaseConfigured() && projectId.includes('${')) {
   console.error('Please check /utils/supabase/info.tsx');
 }
 
+// Check if we're in development mode (safe check)
+const isDevelopment = typeof import.meta !== 'undefined' && 
+                      import.meta.env && 
+                      import.meta.env.DEV === true;
+
 // Log configuration status
 if (isSupabaseConfigured()) {
   console.log('✅ Supabase bağlantısı başarılı');
   console.log(`📡 Supabase URL: ${supabaseUrl}`);
-  if (import.meta.env.DEV) {
+  if (isDevelopment) {
     console.log(`🔑 Storage key: ${AUTH_STORAGE_KEY}`);
   }
 } else {

@@ -149,8 +149,13 @@ export const clearAuthData = async () => {
   }
 };
 
+// Check if we're in development mode (safe check)
+const isDevelopment = typeof import.meta !== 'undefined' && 
+                      import.meta.env && 
+                      import.meta.env.DEV === true;
+
 // Expose to window ONLY in development
-if (typeof window !== 'undefined' && import.meta.env.DEV) {
+if (typeof window !== 'undefined' && isDevelopment) {
   (window as any).debugAuth = debugAuth;
   (window as any).debugSession = debugSession;
   (window as any).debugLocalStorage = debugLocalStorage;
@@ -161,6 +166,6 @@ if (typeof window !== 'undefined' && import.meta.env.DEV) {
   console.log('  - window.debugSession() - Check session state');
   console.log('  - window.debugLocalStorage() - Check localStorage');
   console.log('  - window.clearAuthData() - Clear all auth data');
-} else if (typeof window !== 'undefined') {
+} else if (typeof window !== 'undefined' && !isDevelopment) {
   console.log('ℹ️ Auth debug tools disabled in production');
 }
