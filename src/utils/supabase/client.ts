@@ -140,7 +140,7 @@ export const validateStorageData = () => {
 
 // Expose Supabase client and helpers to window (DEVELOPMENT ONLY)
 // This allows testing directly from browser console
-if (typeof window !== 'undefined' && isDevelopment) {
+if (typeof window !== 'undefined') {
   // @ts-ignore
   window.supabase = supabase;
   // @ts-ignore
@@ -152,7 +152,7 @@ if (typeof window !== 'undefined' && isDevelopment) {
   // @ts-ignore
   window.getUserProfile = getUserProfile;
   
-  console.log('🔧 Supabase client exposed to console (DEV only):');
+  console.log('🔧 Supabase client exposed to console:');
   console.log('  - window.supabase - Supabase client');
   console.log('  - window.getAuthStorageKey() - Get storage key');
   console.log('  - window.validateStorageData() - Validate storage');
