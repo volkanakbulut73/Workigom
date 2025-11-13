@@ -231,6 +231,73 @@ app.post("/api/check-user", async (c) => {
   }
 });
 
+// Admin: Get all users (requires admin authentication)
+app.get("/make-server-018e1998/admin/users", async (c) => {
+  try {
+    // Get authorization header
+    const authHeader = c.req.header("Authorization");
+    if (!authHeader) {
+      console.error("No authorization header provided");
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+
+    // Extract token from "Bearer <token>"
+    const token = authHeader.replace(/^Bearer\s+/i, '');
+    
+    if (!supabase) {
+      console.error("Supabase client not initialized");
+      return c.json({ error: "Database not configured" }, 500);
+    }
+
+    // Verify the user's token
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    
+    if (authError || !user) {
+      console.error("Authentication failed:", authError?.message);
+      return c.json({ error: "Invalid or expired token" }, 401);
+    }
+
+    // Check if user is admin
+    const { data: userProfile, error: profileError } = await supabase
+      .from('users')
+      .select('user_type')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError || !userProfile) {
+      console.error("Failed to fetch user profile:", profileError?.message);
+      return c.json({ error: "Failed to verify admin status" }, 403);
+    }
+
+    if (userProfile.user_type !== 'admin') {
+      console.error("User is not admin:", user.email);
+      return c.json({ error: "Forbidden - Admin access required" }, 403);
+    }
+
+    // User is admin, fetch all users using service role
+    const { data: allUsers, error: usersError } = await supabase
+      .from('users')
+      .select('id, email, full_name, user_type, created_at, updated_at')
+      .order('created_at', { ascending: false });
+
+    if (usersError) {
+      console.error("Error fetching users:", usersError.message);
+      return c.json({ error: "Failed to fetch users: " + usersError.message }, 500);
+    }
+
+    console.log(`✅ Admin ${user.email} fetched ${allUsers?.length || 0} users`);
+    
+    return c.json({ 
+      success: true,
+      users: allUsers || [],
+      count: allUsers?.length || 0
+    });
+  } catch (err) {
+    console.error("ADMIN_USERS_ERROR:", err);
+    return c.json({ error: "Internal server error" }, 500);
+  }
+});
+
 // Get port from environment variable (Render.com uses PORT)
 const port = parseInt(Deno.env.get("PORT") || "8000");
 

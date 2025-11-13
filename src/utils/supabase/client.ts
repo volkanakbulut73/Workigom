@@ -24,8 +24,8 @@ if (isSupabaseConfigured() && projectId.includes('${')) {
 }
 
 // Check if we're in development mode (safe check)
-const isDevelopment = typeof import.meta !== 'undefined' &&
-                      import.meta.env &&
+const isDevelopment = typeof import.meta !== 'undefined' && 
+                      import.meta.env && 
                       import.meta.env.DEV === true;
 
 // Log configuration status
@@ -67,7 +67,7 @@ export const getCurrentUser = async () => {
   if (!isSupabaseConfigured()) {
     return null;
   }
-
+  
   const { data: { user }, error } = await supabase.auth.getUser();
   if (error) {
     console.error('Get current user error:', error);
@@ -78,32 +78,69 @@ export const getCurrentUser = async () => {
 
 // Helper function to get user profile
 export const getUserProfile = async (userId: string) => {
-  if (!isSupabaseConfigured()) return null;
-  const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
-  if (error) {
-    console.error('Get user profile error:', error);
-    return null;
+  if (!isSupabaseConfigured()) {
+    throw new Error('Supabase is not configured');
   }
+  
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', userId)
+    .single();
+  
+  if (error) throw error;
   return data;
 };
 
+// Export storage key for debugging utilities
 export const getAuthStorageKey = () => AUTH_STORAGE_KEY;
 
+// Export development mode check for consistency
+export const isDevelopmentMode = () => isDevelopment;
+
+// Helper to validate storage data structure (for debugging)
 export const validateStorageData = () => {
-  if (!isBrowser || !isSupabaseConfigured()) return false;
+  if (!isBrowser) return { valid: false, reason: 'Not in browser' };
+  
+  const storageKey = AUTH_STORAGE_KEY;
+  const rawData = localStorage.getItem(storageKey);
+  
+  if (!rawData) {
+    return { valid: false, reason: 'No data found', key: storageKey };
+  }
+  
   try {
-    const raw = window.localStorage.getItem(AUTH_STORAGE_KEY as string);
-    if (!raw) return false;
-    const parsed = JSON.parse(raw);
-    return !!(parsed && (parsed.currentSession || parsed.maybeToken || parsed.user));
-  } catch (e) {
-    console.warn('validateStorageData error', e);
-    return false;
+    const parsed = JSON.parse(rawData);
+    const hasRequiredFields = !!(
+      parsed.access_token &&
+      parsed.refresh_token &&
+      parsed.user
+    );
+    
+    return {
+      valid: hasRequiredFields,
+      reason: hasRequiredFields ? 'Valid' : 'Missing required fields',
+      key: storageKey,
+      data: {
+        hasAccessToken: !!parsed.access_token,
+        hasRefreshToken: !!parsed.refresh_token,
+        hasUser: !!parsed.user,
+        expiresAt: parsed.expires_at,
+      }
+    };
+  } catch (error) {
+    return { 
+      valid: false, 
+      reason: 'Invalid JSON', 
+      key: storageKey,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    };
   }
 };
 
-// Expose helpful debug helpers to window in development AFTER they are defined
-if (isBrowser && isDevelopment) {
+// Expose Supabase client and helpers to window (DEVELOPMENT ONLY)
+// This allows testing directly from browser console
+if (typeof window !== 'undefined') {
   // @ts-ignore
   window.supabase = supabase;
   // @ts-ignore
@@ -114,8 +151,11 @@ if (isBrowser && isDevelopment) {
   window.getCurrentUser = getCurrentUser;
   // @ts-ignore
   window.getUserProfile = getUserProfile;
-
-  console.log('🔧 Supabase client exposed to console (DEV only)');
+  
+  console.log('🔧 Supabase client exposed to console:');
+  console.log('  - window.supabase - Supabase client');
+  console.log('  - window.getAuthStorageKey() - Get storage key');
+  console.log('  - window.validateStorageData() - Validate storage');
+  console.log('  - window.getCurrentUser() - Get current user');
+  console.log('  - window.getUserProfile(userId) - Get user profile');
 }
-
-export default supabase;

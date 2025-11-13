@@ -58,31 +58,42 @@ export function SendNotificationForm() {
           return;
         }
 
-        // Fetch users with service role or authenticated user
-        const { data, error } = await supabase
-          .from('users')
-          .select('id, email, full_name, user_type')
-          .order('created_at', { ascending: false });
+        // Fetch users via backend endpoint (service role)
+        const backendUrl = `https://wstmyjshbzsctpngwliw.supabase.co/functions/v1/make-server-018e1998/admin/users`;
+        
+        const response = await fetch(backendUrl, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`,
+          },
+        });
 
-        if (error) {
-          console.error('Error fetching users:', error);
+        if (!response.ok) {
+          const errorData = await response.json();
+          console.error('Backend error:', errorData);
           
-          // Check if it's an auth error
-          if (error.message?.includes('JWT') || error.message?.includes('expired') || error.message?.includes('invalid')) {
+          if (response.status === 401) {
             setAuthError(true);
             toast.error('❌ Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.');
+          } else if (response.status === 403) {
+            toast.error('❌ Admin yetkisi gerekli');
           } else {
-            toast.error('❌ Kullanıcılar yüklenirken hata oluştu: ' + error.message);
+            toast.error('❌ Kullanıcılar yüklenirken hata oluştu: ' + (errorData.error || 'Bilinmeyen hata'));
           }
+          setLoadingUsers(false);
           return;
         }
 
-        if (data) {
-          setUsers(data as UserData[]);
-          console.log(`✅ ${data.length} kullanıcı yüklendi`);
+        const result = await response.json();
+        
+        if (result.success && result.users) {
+          setUsers(result.users as UserData[]);
+          console.log(`✅ ${result.users.length} kullanıcı yüklendi (backend)`);
         }
       } catch (error) {
         console.error('Error fetching users:', error);
+        toast.error('❌ Kullanıcılar yüklenirken hata oluştu');
       } finally {
         setLoadingUsers(false);
       }
