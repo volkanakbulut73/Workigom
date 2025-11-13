@@ -5,19 +5,38 @@ import { createClient } from "@supabase/supabase-js";
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Env değişkenleri yoksa hata fırlat
+// Güvenlik: frontend için sadece anon key kullanılmalı
+// (Service role kesinlikle burada olmamalı)
+
+// Tarayıcı ortam kontrolü
+const isBrowser = typeof window !== "undefined";
+
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    "VITE_SUPABASE_URL ve VITE_SUPABASE_ANON_KEY ortam değişkenleri tanımlı değil!"
+  // Deployment pipeline'ınızda fail-fast istiyorsanız throw tercih edilebilir;
+  // geliştirme sürecinde build hatalarını önlemek için uyarı yazıyoruz.
+  console.warn(
+    "VITE_SUPABASE_URL veya VITE_SUPABASE_ANON_KEY bulunamadı. Supabase bağlantısı yapılandırılmamış olabilir."
   );
 }
 
-// Supabase client oluştur
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,    // Kullanıcının oturumunu tarayıcıda sakla
-    storage: localStorage,   // Token'ı localStorage'da tut
-    autoRefreshToken: true,  // Token süresi dolarsa otomatik yenile
-    detectSessionInUrl: true // OAuth yönlendirmelerinde session yakala
-  },
-});
+// Güvenli storage: yalnızca tarayıcıdaysak localStorage kullan
+const storage = isBrowser ? window.localStorage : undefined;
+
+export const supabase = createClient(
+  supabaseUrl ?? "",
+  supabaseAnonKey ?? "",
+  {
+    auth: {
+      persistSession: Boolean(isBrowser),
+      storage, // undefined ise in-memory davranışı olur
+      autoRefreshToken: true,
+      detectSessionInUrl: Boolean(isBrowser),
+    },
+  }
+);
+
+// Geliştirme sırasında global erişim (yalnızca DEV)
+if (isBrowser && import.meta.env.DEV) {
+  // @ts-ignore - debug amaçlı
+  window.supabase = supabase;
+}
