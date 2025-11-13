@@ -375,7 +375,9 @@ export function LoginScreen({ onLoginSuccess, onBack, isAdminLogin }: LoginScree
                 <Label htmlFor="email">Admin E-posta</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
+                  autoComplete="email"
                   placeholder={ADMIN_EMAIL}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -388,7 +390,9 @@ export function LoginScreen({ onLoginSuccess, onBack, isAdminLogin }: LoginScree
                 <Label htmlFor="password">Şifre</Label>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
+                  autoComplete="current-password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -450,7 +454,9 @@ export function LoginScreen({ onLoginSuccess, onBack, isAdminLogin }: LoginScree
                 <Label htmlFor="email">E-posta</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
+                  autoComplete="email"
                   placeholder="ornek@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -462,7 +468,9 @@ export function LoginScreen({ onLoginSuccess, onBack, isAdminLogin }: LoginScree
                 <Label htmlFor="password">Şifre</Label>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
+                  autoComplete="current-password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -494,7 +502,9 @@ export function LoginScreen({ onLoginSuccess, onBack, isAdminLogin }: LoginScree
                 <Label htmlFor="name">{selectedRole === 'corporate' ? 'Yetkili Adı' : 'Ad Soyad'}</Label>
                 <Input
                   id="name"
+                  name="name"
                   type="text"
+                  autoComplete="name"
                   placeholder={selectedRole === 'corporate' ? 'Ahmet Yılmaz' : 'Ad Soyad'}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -509,7 +519,9 @@ export function LoginScreen({ onLoginSuccess, onBack, isAdminLogin }: LoginScree
                     <Label htmlFor="companyName">Şirket Adı</Label>
                     <Input
                       id="companyName"
+                      name="companyName"
                       type="text"
+                      autoComplete="organization"
                       placeholder="ABC Teknoloji A.Ş."
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
@@ -521,7 +533,9 @@ export function LoginScreen({ onLoginSuccess, onBack, isAdminLogin }: LoginScree
                     <Label htmlFor="taxNumber">Vergi Numarası (Opsiyonel)</Label>
                     <Input
                       id="taxNumber"
+                      name="taxNumber"
                       type="text"
+                      autoComplete="off"
                       placeholder="1234567890"
                       value={taxNumber}
                       onChange={(e) => setTaxNumber(e.target.value)}
@@ -535,7 +549,9 @@ export function LoginScreen({ onLoginSuccess, onBack, isAdminLogin }: LoginScree
                 <Label htmlFor="phone">Telefon</Label>
                 <Input
                   id="phone"
+                  name="phone"
                   type="tel"
+                  autoComplete="tel"
                   placeholder="+90 555 000 0000"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
@@ -548,7 +564,9 @@ export function LoginScreen({ onLoginSuccess, onBack, isAdminLogin }: LoginScree
                 <Label htmlFor="email">E-posta</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
+                  autoComplete="email"
                   placeholder="ornek@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -561,7 +579,9 @@ export function LoginScreen({ onLoginSuccess, onBack, isAdminLogin }: LoginScree
                 <Label htmlFor="password">Şifre (min. 6 karakter)</Label>
                 <Input
                   id="password"
+                  name="password"
                   type="password"
+                  autoComplete="new-password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

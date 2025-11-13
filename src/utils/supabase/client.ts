@@ -62,28 +62,6 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-// Expose Supabase client and helpers to window (DEVELOPMENT ONLY)
-// This allows testing directly from browser console
-if (typeof window !== 'undefined' && isDevelopment) {
-  // @ts-ignore
-  window.supabase = supabase;
-  // @ts-ignore
-  window.getAuthStorageKey = getAuthStorageKey;
-  // @ts-ignore
-  window.validateStorageData = validateStorageData;
-  // @ts-ignore
-  window.getCurrentUser = getCurrentUser;
-  // @ts-ignore
-  window.getUserProfile = getUserProfile;
-  
-  console.log('🔧 Supabase client exposed to console (DEV only):');
-  console.log('  - window.supabase - Supabase client');
-  console.log('  - window.getAuthStorageKey() - Get storage key');
-  console.log('  - window.validateStorageData() - Validate storage');
-  console.log('  - window.getCurrentUser() - Get current user');
-  console.log('  - window.getUserProfile(userId) - Get user profile');
-}
-
 // Helper function to get current user
 export const getCurrentUser = async () => {
   if (!isSupabaseConfigured()) {
@@ -159,3 +137,25 @@ export const validateStorageData = () => {
     };
   }
 };
+
+// Expose Supabase client and helpers to window (DEVELOPMENT ONLY)
+// This allows testing directly from browser console
+if (typeof window !== 'undefined' && isDevelopment) {
+  // @ts-ignore
+  window.supabase = supabase;
+  // @ts-ignore
+  window.getAuthStorageKey = getAuthStorageKey;
+  // @ts-ignore
+  window.validateStorageData = validateStorageData;
+  // @ts-ignore
+  window.getCurrentUser = getCurrentUser;
+  // @ts-ignore
+  window.getUserProfile = getUserProfile;
+  
+  console.log('🔧 Supabase client exposed to console (DEV only):');
+  console.log('  - window.supabase - Supabase client');
+  console.log('  - window.getAuthStorageKey() - Get storage key');
+  console.log('  - window.validateStorageData() - Validate storage');
+  console.log('  - window.getCurrentUser() - Get current user');
+  console.log('  - window.getUserProfile(userId) - Get user profile');
+}
