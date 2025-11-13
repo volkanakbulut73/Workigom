@@ -5,6 +5,7 @@ import { LoginScreen } from "./components/LoginScreen";
 import { IndividualDashboard } from "./components/IndividualDashboard";
 import { CorporateDashboard } from "./components/CorporateDashboard";
 import { AdminDashboard } from "./components/admin/AdminDashboard";
+import { AdminPanel } from "./components/admin/AdminPanel";
 import { JobApplicationDetail } from "./components/JobApplicationDetail";
 import { SetupChecker } from "./components/SetupChecker";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
