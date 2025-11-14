@@ -12,9 +12,9 @@ interface LandingPageProps {
 
 export function LandingPage({ onGetStarted, onAdminLogin }: LandingPageProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#C9E2F2]/40 via-white to-[#C9E2F2]/30">
+    <div className="min-h-screen bg-gradient-to-br from-[#FFF9E6] via-[#FFE5CC]/20 to-[#FFF9E6]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-[#C9E2F2] shadow-sm">
+      <header className="sticky top-0 z-50 bg-[#FFF9E6]/90 backdrop-blur-lg border-b-2 border-[#FFE5CC] shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img 
@@ -23,12 +23,12 @@ export function LandingPage({ onGetStarted, onAdminLogin }: LandingPageProps) {
               className="h-10 sm:h-12 w-auto"
             />
             <div className="hidden sm:block">
-              <p className="text-xs text-[#3F9BBF]">Birlikte Daha Güçlüyüz</p>
+              <p className="text-xs text-[#4DD0E1] font-semibold">✨ Birlikte Daha Güçlüyüz</p>
             </div>
           </div>
           <Button 
             onClick={onGetStarted}
-            className="bg-gradient-to-r from-[#0367A6] to-[#3F9BBF] hover:from-[#3F9BBF] hover:to-[#0367A6] shadow-lg"
+            className="bg-[#4DD0E1] hover:bg-[#3BB8C8] text-white rounded-xl shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:scale-105 transition-all font-medium"
           >
             Giriş Yap
           </Button>

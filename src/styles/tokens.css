@@ -1,0 +1,159 @@
+/**
+ * WORKIGOM Design Tokens
+ * "Sevimli & Eğlenceli" Theme - Tokenized
+ * 
+ * Usage: Import this file before other stylesheets
+ * All components should reference these CSS variables
+ */
+
+:root {
+  /* ========================================
+     COLORS - Sevimli & Eğlenceli Palette
+     ======================================== */
+  
+  /* Primary Colors */
+  --color-turquoise: #4DD0E1;
+  --color-turquoise-dark: #3BB8C8;
+  --color-pink: #FF80AB;
+  --color-pink-dark: #F06292;
+  --color-lavender: #B39DDB;
+  --color-lavender-dark: #9575CD;
+  --color-lemon: #FFF176;
+  --color-lemon-dark: #FFF59D;
+  
+  /* Neutral Colors */
+  --color-cream: #FFF9E6;
+  --color-cream-border: #FFE5CC;
+  --color-surface: #FFFFFF;
+  --color-bg: #F6F7FB;
+  --color-bg-alt: #FAFBFC;
+  
+  /* Text Colors */
+  --text-strong: #333333;
+  --text-body: #757575;
+  --text-muted: #9E9E9E;
+  --text-white: #FFFFFF;
+  
+  /* Semantic Colors */
+  --color-success: #4CAF50;
+  --color-warning: #FF9800;
+  --color-error: #F44336;
+  --color-info: #2196F3;
+  
+  /* ========================================
+     TYPOGRAPHY
+     ======================================== */
+  
+  /* Font Families */
+  --font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  /* Font Sizes */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.875rem;     /* 14px */
+  --text-base: 1rem;       /* 16px */
+  --text-lg: 1.125rem;     /* 18px */
+  --text-xl: 1.25rem;      /* 20px */
+  --text-2xl: 1.375rem;    /* 22px */
+  --text-3xl: 1.5rem;      /* 24px */
+  
+  /* Font Weights */
+  --font-regular: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  
+  /* Line Heights */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.75;
+  
+  /* ========================================
+     SPACING
+     ======================================== */
+  
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  
+  /* ========================================
+     BORDER RADIUS
+     ======================================== */
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  
+  /* ========================================
+     SHADOWS / ELEVATION
+     ======================================== */
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-base: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.15);
+  
+  /* Elevation (alternative naming) */
+  --elevation-1: var(--shadow-base);
+  --elevation-2: var(--shadow-md);
+  --elevation-3: var(--shadow-lg);
+  
+  /* ========================================
+     LAYOUT
+     ======================================== */
+  
+  --container-left: 24px;
+  --container-max-width: 1280px;
+  --grid-gutter: 16px;
+  --sidebar-width: 260px;
+  --header-height: 64px;
+  --bottom-nav-height: 64px;
+  
+  /* Card Constraints */
+  --card-min-height: 96px;
+  --card-padding: 18px;
+  
+  /* ========================================
+     TRANSITIONS / ANIMATIONS
+     ======================================== */
+  
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 250ms ease-in-out;
+  --transition-slow: 350ms ease-in-out;
+  
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  
+  /* ========================================
+     Z-INDEX LAYERS
+     ======================================== */
+  
+  --z-base: 1;
+  --z-dropdown: 1000;
+  --z-sticky: 1100;
+  --z-fixed: 1200;
+  --z-modal-backdrop: 1300;
+  --z-modal: 1400;
+  --z-popover: 1500;
+  --z-tooltip: 1600;
+}
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS (for reference)
+   ======================================== */
+
+/*
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+*/

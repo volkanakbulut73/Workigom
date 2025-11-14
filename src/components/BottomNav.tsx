@@ -26,48 +26,64 @@ export function BottomNav({ activeTab, onTabChange, role }: BottomNavProps) {
     ).length;
 
     return (
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 w-full bg-white/80 backdrop-blur-lg border-t border-border shadow-lg z-50">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 w-full bg-gradient-to-r from-[#FFF9E6] to-[#FFE5CC]/50 backdrop-blur-lg border-t-2 border-[#FFE5CC] shadow-2xl z-50 rounded-t-3xl">
         <div className="grid grid-cols-5 py-3">
           <button
             onClick={() => onTabChange('home')}
-            className={`flex flex-col items-center gap-1 transition-all duration-200 ${
-              activeTab === 'home' ? 'text-[#0367A6] scale-105' : 'text-[#3F9BBF]'
+            className={`flex flex-col items-center gap-1 transition-all duration-300 ${
+              activeTab === 'home' ? 'text-[#4DD0E1] scale-110' : 'text-[#757575]'
             }`}
           >
-            <Home className="w-5 h-5" />
-            <span className="text-xs">Ana Sayfa</span>
+            <div className={`p-2 rounded-2xl transition-all ${
+              activeTab === 'home' ? 'bg-gradient-to-br from-[#4DD0E1] to-[#FF80AB] text-white shadow-lg' : ''
+            }`}>
+              <Home className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-medium">Ana</span>
           </button>
           
           <button
             onClick={() => onTabChange('urgent-jobs')}
-            className={`flex flex-col items-center gap-1 transition-all duration-200 ${
-              activeTab === 'urgent-jobs' ? 'text-[#0367A6] scale-105' : 'text-[#3F9BBF]'
+            className={`flex flex-col items-center gap-1 transition-all duration-300 ${
+              activeTab === 'urgent-jobs' ? 'text-[#4DD0E1] scale-110' : 'text-[#757575]'
             }`}
           >
-            <Briefcase className="w-5 h-5" />
-            <span className="text-xs">Acil İşler</span>
+            <div className={`p-2 rounded-2xl transition-all ${
+              activeTab === 'urgent-jobs' ? 'bg-gradient-to-br from-[#4DD0E1] to-[#FF80AB] text-white shadow-lg' : ''
+            }`}>
+              <Briefcase className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-medium">Acil</span>
           </button>
 
           <button
             onClick={() => onTabChange('job-listings')}
-            className={`flex flex-col items-center gap-1 transition-all duration-200 ${
-              activeTab === 'job-listings' ? 'text-[#0367A6] scale-105' : 'text-[#3F9BBF]'
+            className={`flex flex-col items-center gap-1 transition-all duration-300 ${
+              activeTab === 'job-listings' ? 'text-[#4DD0E1] scale-110' : 'text-[#757575]'
             }`}
           >
-            <Newspaper className="w-5 h-5" />
-            <span className="text-xs">İlanlar</span>
+            <div className={`p-2 rounded-2xl transition-all ${
+              activeTab === 'job-listings' ? 'bg-gradient-to-br from-[#4DD0E1] to-[#FF80AB] text-white shadow-lg' : ''
+            }`}>
+              <Newspaper className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-medium">İlan</span>
           </button>
 
           <button
             onClick={() => onTabChange('notifications')}
-            className={`flex flex-col items-center gap-1 transition-all duration-200 relative ${
-              activeTab === 'notifications' ? 'text-[#0367A6] scale-105' : 'text-[#3F9BBF]'
+            className={`flex flex-col items-center gap-1 transition-all duration-300 relative ${
+              activeTab === 'notifications' ? 'text-[#4DD0E1] scale-110' : 'text-[#757575]'
             }`}
           >
-            <Bell className="w-5 h-5" />
-            <span className="text-xs">Bildirim</span>
+            <div className={`p-2 rounded-2xl transition-all ${
+              activeTab === 'notifications' ? 'bg-gradient-to-br from-[#4DD0E1] to-[#FF80AB] text-white shadow-lg' : ''
+            }`}>
+              <Bell className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-medium">Bildirim</span>
             {unreadNotifications > 0 && (
-              <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center px-1">
+              <div className="absolute top-0 right-2 min-w-[20px] h-[20px] bg-gradient-to-r from-[#FF80AB] to-[#FF6B9D] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1.5 shadow-lg border-2 border-white">
                 {unreadNotifications}
               </div>
             )}
@@ -75,12 +91,16 @@ export function BottomNav({ activeTab, onTabChange, role }: BottomNavProps) {
 
           <button
             onClick={() => onTabChange('profile')}
-            className={`flex flex-col items-center gap-1 transition-all duration-200 ${
-              activeTab === 'profile' ? 'text-[#0367A6] scale-105' : 'text-[#3F9BBF]'
+            className={`flex flex-col items-center gap-1 transition-all duration-300 ${
+              activeTab === 'profile' ? 'text-[#4DD0E1] scale-110' : 'text-[#757575]'
             }`}
           >
-            <User className="w-5 h-5" />
-            <span className="text-xs">Profil</span>
+            <div className={`p-2 rounded-2xl transition-all ${
+              activeTab === 'profile' ? 'bg-gradient-to-br from-[#4DD0E1] to-[#FF80AB] text-white shadow-lg' : ''
+            }`}>
+              <User className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-medium">Profil</span>
           </button>
         </div>
       </div>
@@ -112,38 +132,50 @@ export function BottomNav({ activeTab, onTabChange, role }: BottomNavProps) {
     ).length;
 
     return (
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 w-full bg-white/80 backdrop-blur-lg border-t border-border shadow-lg z-50">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 w-full bg-gradient-to-r from-[#FFF9E6] to-[#FFE5CC]/50 backdrop-blur-lg border-t-2 border-[#FFE5CC] shadow-2xl z-50 rounded-t-3xl">
         <div className="grid grid-cols-5 py-3">
           <button
             onClick={() => onTabChange('company-home')}
-            className={`flex flex-col items-center gap-1 transition-all duration-200 ${
-              activeTab === 'company-home' ? 'text-[#3F9BBF] scale-105' : 'text-[#0367A6]'
+            className={`flex flex-col items-center gap-1 transition-all duration-300 ${
+              activeTab === 'company-home' ? 'text-[#4DD0E1] scale-110' : 'text-[#757575]'
             }`}
           >
-            <Home className="w-5 h-5" />
-            <span className="text-xs">Ana</span>
+            <div className={`p-2 rounded-2xl transition-all ${
+              activeTab === 'company-home' ? 'bg-gradient-to-br from-[#4DD0E1] to-[#FF80AB] text-white shadow-lg' : ''
+            }`}>
+              <Home className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-medium">Ana</span>
           </button>
           
           <button
             onClick={() => onTabChange('gelen-personeller')}
-            className={`flex flex-col items-center gap-1 transition-all duration-200 ${
-              activeTab === 'gelen-personeller' ? 'text-[#3F9BBF] scale-105' : 'text-[#0367A6]'
+            className={`flex flex-col items-center gap-1 transition-all duration-300 ${
+              activeTab === 'gelen-personeller' ? 'text-[#4DD0E1] scale-110' : 'text-[#757575]'
             }`}
           >
-            <Users className="w-5 h-5" />
-            <span className="text-xs">Personel</span>
+            <div className={`p-2 rounded-2xl transition-all ${
+              activeTab === 'gelen-personeller' ? 'bg-gradient-to-br from-[#4DD0E1] to-[#FF80AB] text-white shadow-lg' : ''
+            }`}>
+              <Users className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-medium">Personel</span>
           </button>
 
           <button
             onClick={() => onTabChange('notifications')}
-            className={`flex flex-col items-center gap-1 transition-all duration-200 relative ${
-              activeTab === 'notifications' ? 'text-[#3F9BBF] scale-105' : 'text-[#0367A6]'
+            className={`flex flex-col items-center gap-1 transition-all duration-300 relative ${
+              activeTab === 'notifications' ? 'text-[#4DD0E1] scale-110' : 'text-[#757575]'
             }`}
           >
-            <Bell className="w-5 h-5" />
-            <span className="text-xs">Bildirim</span>
+            <div className={`p-2 rounded-2xl transition-all ${
+              activeTab === 'notifications' ? 'bg-gradient-to-br from-[#4DD0E1] to-[#FF80AB] text-white shadow-lg' : ''
+            }`}>
+              <Bell className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-medium">Bildirim</span>
             {unreadNotifications > 0 && (
-              <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center px-1">
+              <div className="absolute top-0 right-2 min-w-[20px] h-[20px] bg-gradient-to-r from-[#FF80AB] to-[#FF6B9D] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1.5 shadow-lg border-2 border-white">
                 {unreadNotifications}
               </div>
             )}
@@ -151,14 +183,18 @@ export function BottomNav({ activeTab, onTabChange, role }: BottomNavProps) {
 
           <button
             onClick={() => onTabChange('messages')}
-            className={`flex flex-col items-center gap-1 transition-all duration-200 relative ${
-              activeTab === 'messages' ? 'text-[#3F9BBF] scale-105' : 'text-[#0367A6]'
+            className={`flex flex-col items-center gap-1 transition-all duration-300 relative ${
+              activeTab === 'messages' ? 'text-[#4DD0E1] scale-110' : 'text-[#757575]'
             }`}
           >
-            <MessageSquare className="w-5 h-5" />
-            <span className="text-xs">Mesaj</span>
+            <div className={`p-2 rounded-2xl transition-all ${
+              activeTab === 'messages' ? 'bg-gradient-to-br from-[#4DD0E1] to-[#FF80AB] text-white shadow-lg' : ''
+            }`}>
+              <MessageSquare className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-medium">Mesaj</span>
             {unreadMessages > 0 && (
-              <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center px-1">
+              <div className="absolute top-0 right-2 min-w-[20px] h-[20px] bg-gradient-to-r from-[#FF80AB] to-[#FF6B9D] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1.5 shadow-lg border-2 border-white">
                 {unreadMessages}
               </div>
             )}
@@ -166,12 +202,16 @@ export function BottomNav({ activeTab, onTabChange, role }: BottomNavProps) {
 
           <button
             onClick={() => onTabChange('view-applications')}
-            className={`flex flex-col items-center gap-1 transition-all duration-200 ${
-              activeTab === 'view-applications' ? 'text-[#3F9BBF] scale-105' : 'text-[#0367A6]'
+            className={`flex flex-col items-center gap-1 transition-all duration-300 ${
+              activeTab === 'view-applications' ? 'text-[#4DD0E1] scale-110' : 'text-[#757575]'
             }`}
           >
-            <UsersIcon className="w-5 h-5" />
-            <span className="text-xs">Başvuru</span>
+            <div className={`p-2 rounded-2xl transition-all ${
+              activeTab === 'view-applications' ? 'bg-gradient-to-br from-[#4DD0E1] to-[#FF80AB] text-white shadow-lg' : ''
+            }`}>
+              <UsersIcon className="w-5 h-5" />
+            </div>
+            <span className="text-xs font-medium">Başvuru</span>
           </button>
         </div>
       </div>

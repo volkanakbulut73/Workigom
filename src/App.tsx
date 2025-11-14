@@ -1,21 +1,62 @@
 import React, { useState, useEffect } from "react";
-import { Toaster } from "sonner@2.0.3";
+import { Toaster, toast } from "sonner@2.0.3";
+import "./styles/components.css"; // Design System Component Styles
 import { LandingPage } from "./components/LandingPage";
 import { LoginScreen } from "./components/LoginScreen";
-import { IndividualDashboard } from "./components/IndividualDashboard";
-import { CorporateDashboard } from "./components/CorporateDashboard";
-import { AdminDashboard } from "./components/admin/AdminDashboard";
 import { AdminPanel } from "./components/admin/AdminPanel";
-import { JobApplicationDetail } from "./components/JobApplicationDetail";
-import { SetupChecker } from "./components/SetupChecker";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
-import { supabase } from "./utils/supabase/client";
+import { DesktopSidebar } from "./components/DesktopSidebar";
+import { BottomNav } from "./components/BottomNav";
+import { MobileContainer } from "./components/MobileContainer";
 
-// EXPOSE SUPABASE TO WINDOW FOR DEBUGGING
-if (typeof window !== 'undefined') {
-  (window as any).supabase = supabase;
-  console.log('✅ Supabase exposed to window from App.tsx');
-}
+// Employee pages
+import { EmployeeHome } from "./components/employee/EmployeeHome";
+import { UrgentJobsPage } from "./components/employee/UrgentJobsPage";
+import { JobDetailPage } from "./components/employee/JobDetailPage";
+import { ProfilePage } from "./components/employee/ProfilePage";
+import { JobsPage } from "./components/employee/JobsPage";
+import { JobListingsPage } from "./components/employee/JobListingsPage";
+import { MenuMarketHome } from "./components/employee/MenuMarketHome";
+import { SupporterListPage } from "./components/employee/SupporterListPage";
+import { FindSharePage } from "./components/employee/FindSharePage";
+import { ShareDetailPage } from "./components/employee/ShareDetailPage";
+
+// Company pages
+import { CompanyHome } from "./components/company/CompanyHome";
+import { PostJobForm } from "./components/company/PostJobForm";
+import { PostStaffForm } from "./components/company/PostStaffForm";
+import { JobRequestsPage } from "./components/company/JobRequestsPage";
+import { ViewApplicationsPage } from "./components/company/ViewApplicationsPage";
+import { JobApplicationsPage } from "./components/company/JobApplicationsPage";
+import { AssignedPersonnelDetail } from "./components/company/AssignedPersonnelDetail";
+import { GelenPersonellerPage } from "./components/company/GelenPersonellerPage";
+
+// Shared pages
+import { NotificationsPage } from "./components/shared/NotificationsPage";
+import { MessagesPage } from "./components/shared/MessagesPage";
+
+type Page = 
+  | 'home'
+  | 'urgent-jobs'
+  | 'job-detail'
+  | 'profile'
+  | 'jobs'
+  | 'job-listings'
+  | 'menu-market-home'
+  | 'supporter-list'
+  | 'find-share'
+  | 'share-detail'
+  | 'company-home'
+  | 'post-job'
+  | 'post-staff'
+  | 'job-requests'
+  | 'view-applications'
+  | 'job-applications'
+  | 'assigned-personnel-detail'
+  | 'gelen-personeller'
+  | 'notifications'
+  | 'messages'
+  | 'admin-panel';
 
 type AppView =
   | "landing"
@@ -26,7 +67,7 @@ type AppView =
   | "job-detail";
 
 function AppContent() {
-  const { user, profile, loading, signOut, isSupabaseReady } = useAuth();
+  const { user, profile, loading, signOut } = useAuth();
   const [appView, setAppView] = useState<AppView>('landing');
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [selectedJobId, setSelectedJobId] = useState<string>('');
@@ -259,7 +300,6 @@ function AppContent() {
         )}
       </MobileContainer>
       <Toaster />
-      <SetupChecker />
     </>
   );
 }

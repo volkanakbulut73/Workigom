@@ -1,13 +1,19 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { User } from '@supabase/supabase-js';
-import { supabase, isSupabaseConfigured } from '../utils/supabase/client';
-import { Database } from '../utils/supabase/types';
-import { checkUserExists } from '../utils/checkUserExists';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-type UserProfile = Database['public']['Tables']['users']['Row'];
+interface UserProfile {
+  id: string;
+  email: string;
+  full_name: string;
+  phone: string;
+  user_type: 'individual' | 'corporate' | 'admin';
+  company_name?: string;
+  tax_number?: string;
+  address?: string;
+  created_at: string;
+}
 
 interface AuthContextType {
-  user: User | null;
+  user: UserProfile | null;
   profile: UserProfile | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ success: boolean; error?: any }>;
@@ -39,186 +45,166 @@ export const useAuth = () => {
   return context;
 };
 
+// Demo users - şifreler plain text (sadece demo için)
+const DEMO_USERS: Array<UserProfile & { password: string }> = [
+  {
+    id: 'admin-001',
+    email: 'cicicars.com@gmail.com',
+    password: 'admin123',
+    full_name: 'Admin User',
+    phone: '+90 555 000 00 01',
+    user_type: 'admin',
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: 'admin-002',
+    email: 'volkanakbulut73@gmail.com',
+    password: 'admin123',
+    full_name: 'Volkan Akbulut',
+    phone: '+90 555 000 00 02',
+    user_type: 'admin',
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: 'individual-001',
+    email: 'ahmet@example.com',
+    password: 'demo123',
+    full_name: 'Ahmet Yılmaz',
+    phone: '+90 555 111 22 33',
+    user_type: 'individual',
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: 'corporate-001',
+    email: 'sirket@example.com',
+    password: 'demo123',
+    full_name: 'Şirket Yetkili',
+    phone: '+90 555 444 55 66',
+    user_type: 'corporate',
+    company_name: 'Demo Şirket A.Ş.',
+    tax_number: '1234567890',
+    address: 'İstanbul, Türkiye',
+    created_at: new Date().toISOString(),
+  },
+];
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isSupabaseReady] = useState(isSupabaseConfigured());
-  
-  // Use ref instead of boolean for mounted check (React best practice)
-  const isMountedRef = useRef(true);
+  const isSupabaseReady = false; // Artık Supabase kullanmıyoruz
 
-  // Fetch user profile
-  const fetchProfile = async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (error) throw error;
-      
-      // Only update state if component is still mounted
-      if (isMountedRef.current) {
-        setProfile(data);
+  // Load session from localStorage on mount
+  useEffect(() => {
+    const loadSession = () => {
+      try {
+        const savedUser = localStorage.getItem('workigom_user');
+        if (savedUser) {
+          const userData = JSON.parse(savedUser);
+          setUser(userData);
+          setProfile(userData);
+          console.log('✅ Oturum yüklendi:', userData.email);
+        }
+      } catch (error) {
+        console.error('Session yükleme hatası:', error);
+        localStorage.removeItem('workigom_user');
+      } finally {
+        setLoading(false);
       }
-      return data;
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      return null;
+    };
+
+    loadSession();
+  }, []);
+
+  // Load all users to localStorage (first time setup)
+  useEffect(() => {
+    const allUsers = localStorage.getItem('workigom_all_users');
+    if (!allUsers) {
+      // İlk kez çalışıyorsa demo kullanıcıları kaydet
+      localStorage.setItem('workigom_all_users', JSON.stringify(DEMO_USERS));
+      console.log('✅ Demo kullanıcılar yüklendi');
+      console.log('📝 DEMO GİRİŞ BİLGİLERİ:');
+      console.log('🔐 Admin: cicicars.com@gmail.com / admin123');
+      console.log('🔐 Admin: volkanakbulut73@gmail.com / admin123');
+      console.log('👤 Bireysel: ahmet@example.com / demo123');
+      console.log('🏢 Kurumsal: sirket@example.com / demo123');
+    }
+  }, []);
+
+  // Sign in
+  const signIn = async (email: string, password: string): Promise<{ success: boolean; error?: any }> => {
+    try {
+      // Get all users from localStorage
+      const allUsersStr = localStorage.getItem('workigom_all_users');
+      const allUsers: Array<UserProfile & { password: string }> = allUsersStr 
+        ? JSON.parse(allUsersStr) 
+        : DEMO_USERS;
+
+      // Find user
+      const foundUser = allUsers.find(u => u.email === email && u.password === password);
+
+      if (!foundUser) {
+        return { 
+          success: false, 
+          error: { message: 'E-posta veya şifre hatalı' } 
+        };
+      }
+
+      // Remove password from user object
+      const { password: _, ...userWithoutPassword } = foundUser;
+
+      // Save to localStorage
+      localStorage.setItem('workigom_user', JSON.stringify(userWithoutPassword));
+      
+      // Update state
+      setUser(userWithoutPassword);
+      setProfile(userWithoutPassword);
+
+      console.log('✅ Giriş başarılı:', foundUser.email, 'Rol:', foundUser.user_type);
+
+      return { success: true };
+    } catch (error: any) {
+      console.error('Sign in error:', error);
+      return { success: false, error };
     }
   };
 
-  // Initialize auth state
-  useEffect(() => {
-    if (!isSupabaseReady) {
-      // Supabase not configured - just set loading to false
-      console.log('🔧 Database schema kurulumu gerekli. Detaylar için: HIZLI_BASLANGIC.md');
-      setLoading(false);
-      return;
-    }
-
-    // Get initial session
-    const initializeAuth = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Session fetch error:', error);
-          if (isMountedRef.current) {
-            setUser(null);
-            setProfile(null);
-            setLoading(false);
-          }
-          return;
-        }
-
-        if (session?.user) {
-          console.log('✅ Session found:', session.user.id);
-          if (isMountedRef.current) {
-            setUser(session.user);
-            // Wait for profile to be fetched before setting loading to false
-            await fetchProfile(session.user.id);
-          }
-        } else {
-          console.log('ℹ️ No active session');
-        }
-        
-        if (isMountedRef.current) {
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error('Auth initialization error:', error);
-        if (isMountedRef.current) {
-          setLoading(false);
-        }
-      }
-    };
-
-    initializeAuth();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('🔄 Auth state changed:', event);
-      
-      if (!isMountedRef.current) return;
-
-      // Handle different auth events
-      if (event === 'SIGNED_IN') {
-        console.log('✅ User signed in:', session?.user?.id);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user.id);
-        }
-      } else if (event === 'SIGNED_OUT') {
-        console.log('👋 User signed out');
-        setUser(null);
-        setProfile(null);
-      } else if (event === 'TOKEN_REFRESHED') {
-        console.log('🔄 Token refreshed');
-        // User object might have updated
-        setUser(session?.user ?? null);
-      } else if (event === 'USER_UPDATED') {
-        console.log('📝 User updated');
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user.id);
-        }
-      } else {
-        // Handle other events (PASSWORD_RECOVERY, etc.)
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user.id);
-        } else {
-          setProfile(null);
-        }
-      }
-      
-      setLoading(false);
-    });
-
-    return () => {
-      // Cleanup: mark as unmounted and unsubscribe
-      isMountedRef.current = false;
-      subscription.unsubscribe();
-    };
-  }, [isSupabaseReady]);
-
   // Sign up
   const signUp = async (data: SignUpData): Promise<{ success: boolean; error?: any }> => {
-    if (!isSupabaseReady) {
-      return { 
-        success: false, 
-        error: new Error('Database bağlantısı kurulamadı. Lütfen Supabase schema kurulumunu tamamlayın.') 
-      };
-    }
-
     try {
-      // 1. Create auth user with email auto-confirmation
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      // Get all users
+      const allUsersStr = localStorage.getItem('workigom_all_users');
+      const allUsers: Array<UserProfile & { password: string }> = allUsersStr 
+        ? JSON.parse(allUsersStr) 
+        : DEMO_USERS;
+
+      // Check if email already exists
+      if (allUsers.some(u => u.email === data.email)) {
+        return { 
+          success: false, 
+          error: { message: 'Bu e-posta adresi zaten kullanılıyor' } 
+        };
+      }
+
+      // Create new user
+      const newUser: UserProfile & { password: string } = {
+        id: `${data.userType}-${Date.now()}`,
         email: data.email,
         password: data.password,
-        options: {
-          data: {
-            full_name: data.fullName,
-            user_type: data.userType,
-          },
-          // Auto-confirm email since email server is not configured
-          emailRedirectTo: undefined,
-        },
-      });
-
-      if (authError) {
-        console.error('Auth signup error:', authError);
-        throw authError;
-      }
-      
-      if (!authData.user) {
-        console.error('No user returned from signup');
-        throw new Error('User creation failed');
-      }
-
-      console.log('User created successfully:', authData.user.id);
-
-      // 2. Create user profile
-      const { error: profileError } = await supabase.from('users').insert({
-        id: authData.user.id,
-        email: data.email,
         full_name: data.fullName,
         phone: data.phone,
         user_type: data.userType,
-        company_name: data.companyName || null,
-        tax_number: data.taxNumber || null,
-        address: data.address || null,
-      });
+        company_name: data.companyName || undefined,
+        tax_number: data.taxNumber || undefined,
+        address: data.address || undefined,
+        created_at: new Date().toISOString(),
+      };
 
-      if (profileError) {
-        console.error('Profile creation error:', profileError);
-        throw profileError;
-      }
+      // Add to all users
+      allUsers.push(newUser);
+      localStorage.setItem('workigom_all_users', JSON.stringify(allUsers));
 
-      console.log('Profile created successfully');
+      console.log('✅ Yeni kullanıcı oluşturuldu:', newUser.email);
 
       return { success: true };
     } catch (error: any) {
@@ -227,39 +213,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Sign in
-  const signIn = async (email: string, password: string): Promise<{ success: boolean; error?: any }> => {
-    if (!isSupabaseReady) {
-      return { 
-        success: false, 
-        error: new Error('Database bağlantısı kurulamadı. Lütfen Supabase schema kurulumunu tamamlayın.') 
-      };
-    }
-
-    try {
-      const { data: authData, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw error;
-      if (!authData.user) throw new Error('Sign in failed');
-
-      // Profile will be fetched by onAuthStateChange
-      return { success: true };
-    } catch (error: any) {
-      console.error('Sign in error:', error);
-      return { success: false, error };
-    }
-  };
-
   // Sign out
   const signOut = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      localStorage.removeItem('workigom_user');
       setUser(null);
       setProfile(null);
+      console.log('✅ Çıkış yapıldı');
     } catch (error) {
       console.error('Sign out error:', error);
     }
@@ -270,19 +230,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!user) return { success: false, error: new Error('No user logged in') };
 
     try {
-      const { error } = await supabase
-        .from('users')
-        .update({
-          ...updates,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', user.id);
+      // Update current user
+      const updatedUser = { ...user, ...updates };
+      
+      // Save to localStorage
+      localStorage.setItem('workigom_user', JSON.stringify(updatedUser));
+      
+      // Update in all users list
+      const allUsersStr = localStorage.getItem('workigom_all_users');
+      if (allUsersStr) {
+        const allUsers = JSON.parse(allUsersStr);
+        const userIndex = allUsers.findIndex((u: any) => u.id === user.id);
+        if (userIndex !== -1) {
+          allUsers[userIndex] = { ...allUsers[userIndex], ...updates };
+          localStorage.setItem('workigom_all_users', JSON.stringify(allUsers));
+        }
+      }
 
-      if (error) throw error;
+      // Update state
+      setUser(updatedUser);
+      setProfile(updatedUser);
 
-      // Refresh profile
-      await fetchProfile(user.id);
-
+      console.log('✅ Profil güncellendi');
       return { success: true };
     } catch (error: any) {
       console.error('Update profile error:', error);
@@ -290,10 +259,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Refresh profile manually
+  // Refresh profile
   const refreshProfile = async () => {
     if (user) {
-      await fetchProfile(user.id);
+      // Reload from localStorage
+      const savedUser = localStorage.getItem('workigom_user');
+      if (savedUser) {
+        const userData = JSON.parse(savedUser);
+        setUser(userData);
+        setProfile(userData);
+      }
     }
   };
 

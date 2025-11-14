@@ -7,7 +7,7 @@ import { Textarea } from "../ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Calendar } from "../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { ArrowLeft, Calendar as CalendarIcon, Clock } from "lucide-react";
+import { ArrowLeft, Calendar as CalendarIcon } from "lucide-react";
 import { toast } from "sonner@2.0.3";
 import { format } from "date-fns";
 import { tr } from "date-fns/locale";
@@ -27,24 +27,12 @@ export function PostJobForm({ onNavigate }: PostJobFormProps) {
   });
 
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const [selectedHour, setSelectedHour] = useState<string>("");
-
-  // Tarih ve saati formatla: 20.Ekim.2025 - 08:00
-  const getFormattedDateTime = () => {
-    if (!selectedDate || !selectedHour) return "";
-    
-    const day = selectedDate.getDate();
-    const month = format(selectedDate, "MMMM", { locale: tr });
-    const year = selectedDate.getFullYear();
-    
-    return `${day}.${month}.${year} - ${selectedHour}`;
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!selectedDate || !selectedHour) {
-      toast.error('Lütfen başlangıç tarih ve saatini seçin');
+    if (!selectedDate) {
+      toast.error('Lütfen başlangıç tarihini seçin');
       return;
     }
     
@@ -67,7 +55,7 @@ export function PostJobForm({ onNavigate }: PostJobFormProps) {
         description: formData.description,
         requirements: [],
         postedAt: 'Şimdi',
-        startTime: getFormattedDateTime(),
+        startTime: format(selectedDate, "d MMMM yyyy", { locale: tr }),
         status: 'pending',
         isUrgent: true,
         company: companyName,
@@ -104,7 +92,7 @@ export function PostJobForm({ onNavigate }: PostJobFormProps) {
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <h2 className="flex-1">Acil İş İlanı Ver</h2>
+          <h2 className="flex-1">Günlük Acil Personel</h2>
         </div>
       </div>
 
@@ -166,7 +154,7 @@ export function PostJobForm({ onNavigate }: PostJobFormProps) {
               </div>
 
               <div>
-                <Label htmlFor="workTime">Zaman *</Label>
+                <Label htmlFor="workTime">Çalışma Saatleri *</Label>
                 <Input
                   id="workTime"
                   placeholder="örn: 08:00-20:00"
@@ -178,8 +166,8 @@ export function PostJobForm({ onNavigate }: PostJobFormProps) {
             </div>
 
             <div>
-              <Label>Başlangıç Tarih ve Saati *</Label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+              <Label>Başlangıç Tarihi *</Label>
+              <div className="mt-2">
                 {/* Date Picker */}
                 <Popover>
                   <PopoverTrigger className="inline-flex items-center justify-start h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 hover:bg-accent hover:text-accent-foreground">
@@ -200,32 +188,14 @@ export function PostJobForm({ onNavigate }: PostJobFormProps) {
                     />
                   </PopoverContent>
                 </Popover>
-
-                {/* Hour Picker */}
-                <Select value={selectedHour} onValueChange={setSelectedHour}>
-                  <SelectTrigger>
-                    <Clock className="mr-2 h-4 w-4" />
-                    <SelectValue placeholder="Saat seçin" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Array.from({ length: 24 }, (_, i) => {
-                      const hour = i.toString().padStart(2, '0');
-                      return (
-                        <SelectItem key={hour} value={`${hour}:00`}>
-                          {hour}:00
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
               </div>
               
               {/* Preview */}
-              {selectedDate && selectedHour && (
+              {selectedDate && (
                 <div className="mt-2 p-3 bg-[#C9E2F2]/30 rounded-lg border border-[#3F9BBF]">
                   <p className="text-sm text-[#012840]">
                     <span className="text-muted-foreground">Başlangıç: </span>
-                    <span className="font-medium">{getFormattedDateTime()}</span>
+                    <span className="font-medium">{format(selectedDate, "d MMMM yyyy", { locale: tr })}</span>
                   </p>
                 </div>
               )}

@@ -47,16 +47,16 @@ export function DesktopSidebar({ activeTab, onTabChange, role, onLogout }: Deskt
     ];
 
     return (
-      <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-64 bg-white border-r border-border flex-col shadow-lg">
+      <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-64 bg-[#FFF9E6] border-r-2 border-[#FFE5CC] flex-col shadow-xl">
         {/* Logo */}
-        <div className="p-6 border-b border-border">
-          <div className="flex flex-col gap-2">
+        <div className="p-6 border-b-2 border-[#FFE5CC]">
+          <div className="flex flex-col gap-2 bg-gradient-to-br from-[#4DD0E1]/10 to-[#FF80AB]/10 p-4 rounded-2xl">
             <img 
               src={workigomLogoImage} 
               alt="Workigom" 
               className="h-12 w-auto"
             />
-            <p className="text-xs text-[#3F9BBF] ml-1">Bireysel</p>
+            <p className="text-xs text-[#4DD0E1] font-semibold ml-1">✨ Bireysel</p>
           </div>
         </div>
 
@@ -70,10 +70,10 @@ export function DesktopSidebar({ activeTab, onTabChange, role, onLogout }: Deskt
                 key={item.id}
                 onClick={() => onTabChange(item.id)}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 relative",
+                  "w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 relative group",
                   isActive
-                    ? "bg-gradient-to-r from-[#0367A6] to-[#012840] text-white shadow-md"
-                    : "text-[#0367A6] hover:bg-[#C9E2F2] hover:text-[#012840]"
+                    ? "bg-gradient-to-r from-[#4DD0E1] to-[#FF80AB] text-white shadow-lg scale-105"
+                    : "text-[#333333] hover:bg-gradient-to-r hover:from-[#B39DDB]/20 hover:to-[#FFF176]/20 hover:scale-102"
                 )}
               >
                 <Icon className="w-5 h-5" />
@@ -141,7 +141,7 @@ export function DesktopSidebar({ activeTab, onTabChange, role, onLogout }: Deskt
 
     const navItems = [
       { id: 'company-home', label: 'Ana Sayfa', icon: Home },
-      { id: 'post-job', label: 'Acil İş İlanı Ver', icon: Plus },
+      { id: 'post-job', label: 'Günlük Acil Personel', icon: Plus },
       { id: 'post-staff', label: 'Personel İlanı Ver', icon: UserPlus },
       { id: 'job-requests', label: 'İş İlanlarım', icon: FileText },
       { id: 'job-applications', label: 'İş Başvuruları', icon: Briefcase, badge: pendingApplications > 0 ? pendingApplications : undefined },
@@ -152,16 +152,16 @@ export function DesktopSidebar({ activeTab, onTabChange, role, onLogout }: Deskt
     ];
 
     return (
-      <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-64 bg-white border-r border-border flex-col shadow-lg">
+      <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-64 bg-[#FFF9E6] border-r-2 border-[#FFE5CC] flex-col shadow-xl">
         {/* Logo */}
-        <div className="p-6 border-b border-border">
-          <div className="flex flex-col gap-2">
+        <div className="p-6 border-b-2 border-[#FFE5CC]">
+          <div className="flex flex-col gap-2 bg-gradient-to-br from-[#4DD0E1]/10 to-[#FF80AB]/10 p-4 rounded-2xl">
             <img 
               src={workigomLogoImage} 
               alt="Workigom" 
               className="h-12 w-auto"
             />
-            <p className="text-xs text-[#3F9BBF] ml-1">Kurumsal</p>
+            <p className="text-xs text-[#4DD0E1] font-semibold ml-1">✨ Kurumsal</p>
           </div>
         </div>
 
@@ -175,10 +175,10 @@ export function DesktopSidebar({ activeTab, onTabChange, role, onLogout }: Deskt
                 key={item.id}
                 onClick={() => onTabChange(item.id)}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 relative",
+                  "w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300 relative group",
                   isActive
-                    ? "bg-gradient-to-r from-[#3F9BBF] to-[#0367A6] text-white shadow-md"
-                    : "text-[#0367A6] hover:bg-[#C9E2F2] hover:text-[#012840]"
+                    ? "bg-gradient-to-r from-[#4DD0E1] to-[#FF80AB] text-white shadow-lg scale-105"
+                    : "text-[#333333] hover:bg-gradient-to-r hover:from-[#B39DDB]/20 hover:to-[#FFF176]/20 hover:scale-102"
                 )}
               >
                 <Icon className="w-5 h-5" />

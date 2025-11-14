@@ -46,7 +46,7 @@ interface AdminPanelProps {
   onNavigate: (page: string) => void;
 }
 
-type AdminPage = 'dashboard' | 'job-listings' | 'job-listings-management' | 'users' | 'urgent-requests' | 'urgent-job-acceptances' | 'notifications' | 'company-accounts' | 'individual-accounts' | 'pending-payments' | 'settings';
+type AdminPage = 'dashboard' | 'job-listings' | 'job-listings-management' | 'urgent-requests' | 'urgent-job-acceptances' | 'notifications' | 'company-accounts' | 'individual-accounts' | 'pending-payments' | 'settings';
 
 // Individual Dashboard Component
 function IndividualDashboardView({ userId, userName }: { userId: string, userName: string }) {
@@ -537,9 +537,9 @@ function CompanyDashboardView({ companyId, companyName }: { companyId: string, c
       id: Date.now().toString(),
       type: 'payment_notification',
       icon: 'DollarSign',
-      iconColor: 'text-red-600',
-      iconBg: 'bg-red-50',
-      title: 'Giden Ödeme Kaydı',
+      iconColor: 'text-green-600',
+      iconBg: 'bg-green-50',
+      title: 'Gelen Ödeme Kaydı',
       message: `${amount.toLocaleString('tr-TR')} ₺ ödeme kaydedildi. ${paymentDescription ? `Açıklama: ${paymentDescription}` : ''} Yeni bakiyeniz: ${companyAccounts[companyId].remainingBalance.toLocaleString('tr-TR')} ₺`,
       time: 'Şimdi',
       createdAt: new Date().toISOString(),
@@ -686,12 +686,12 @@ function CompanyDashboardView({ companyId, companyName }: { companyId: string, c
         </Card>
       </div>
 
-      {/* Giden Ödeme Kayıt Formu */}
+      {/* Gelen Ödeme Kayıt Formu */}
       <Card className="p-4 lg:p-6 bg-white border-0 shadow-sm">
-        <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-4">Giden Ödeme Kaydı Ekle</h3>
+        <h3 className="text-base lg:text-lg font-semibold text-gray-900 mb-4">Gelen Ödeme Kaydı Ekle</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <Label htmlFor="paymentAmount">Giden Ödeme Tutarı (₺)</Label>
+            <Label htmlFor="paymentAmount">Gelen Ödeme Tutarı (₺)</Label>
             <Input
               id="paymentAmount"
               type="number"
@@ -739,7 +739,7 @@ function CompanyDashboardView({ companyId, companyName }: { companyId: string, c
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Giden Ödeme</th>
+                  <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Gelen Ödeme</th>
                   <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Ödeme Tarihi</th>
                   <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Açıklama</th>
                   <th className="text-right py-3 px-4 text-sm font-semibold text-gray-700">Kalan Bakiye Tutarı</th>
@@ -1232,12 +1232,6 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       count: null
     },
     { 
-      id: 'users' as AdminPage, 
-      label: 'Kullanıcılar', 
-      icon: Users,
-      count: 25
-    },
-    { 
       id: 'urgent-requests' as AdminPage, 
       label: 'Acil Talepler', 
       icon: AlertTriangle,
@@ -1476,35 +1470,6 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                         <span className="text-sm text-gray-600">{job.applicants} başvuru</span>
                         <Badge className={job.status === 'Aktif' ? 'bg-green-100 text-green-700 border-0' : 'bg-orange-100 text-orange-700 border-0'}>
                           {job.status}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </>
-          )}
-
-          {activePage === 'users' && (
-            <>
-              <h1 className="text-2xl lg:text-3xl font-semibold text-gray-900 mb-6 lg:mb-8">Kullanıcılar</h1>
-              <Card className="p-6 bg-white border-0 shadow-sm">
-                <div className="space-y-4">
-                  {[
-                    { name: 'Ahmet Yılmaz', email: 'ahmet@example.com', role: 'Bireysel', status: 'Aktif' },
-                    { name: 'Ayşe Demir', email: 'ayse@example.com', role: 'Bireysel', status: 'Aktif' },
-                    { name: 'ABC Ltd.', email: 'info@abc.com', role: 'Kurumsal', status: 'Aktif' },
-                    { name: 'Mehmet Kaya', email: 'mehmet@example.com', role: 'Bireysel', status: 'Pasif' },
-                  ].map((user, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
-                      <div>
-                        <h3 className="font-semibold text-gray-900">{user.name}</h3>
-                        <p className="text-sm text-gray-600">{user.email}</p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Badge variant="outline">{user.role}</Badge>
-                        <Badge className={user.status === 'Aktif' ? 'bg-green-100 text-green-700 border-0' : 'bg-gray-100 text-gray-700 border-0'}>
-                          {user.status}
                         </Badge>
                       </div>
                     </div>

@@ -6,7 +6,6 @@ import { Textarea } from "../ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { toast } from "sonner@2.0.3";
 import { Bell, Users, Building2, UserCheck, Send, AlertTriangle, Loader2, RefreshCw } from "lucide-react";
-import { supabase, isSupabaseConfigured } from "../../utils/supabase/client";
 import { useAuth } from "../../contexts/AuthContext";
 
 interface UserData {
@@ -25,139 +24,50 @@ export function SendNotificationForm() {
   const [link, setLink] = useState<string>('');
   const [users, setUsers] = useState<UserData[]>([]);
   const [loadingUsers, setLoadingUsers] = useState<boolean>(false);
-  const [authError, setAuthError] = useState<boolean>(false);
 
-  // Fetch users from Supabase
+  // Fetch users from localStorage
   useEffect(() => {
-    const fetchUsers = async () => {
-      if (!isSupabaseConfigured()) {
-        console.log('Supabase not configured, using demo data');
-        return;
-      }
-
-      // Check if user is authenticated
-      if (!user) {
-        console.error('User not authenticated');
-        setAuthError(true);
-        toast.error('❌ Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.');
-        return;
-      }
-
-      setLoadingUsers(true);
-      setAuthError(false);
-      
-      try {
-        // Check session first
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
-        if (sessionError || !session) {
-          console.error('Session error:', sessionError);
-          setAuthError(true);
-          toast.error('❌ Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.');
-          setLoadingUsers(false);
-          return;
-        }
-
-        // Fetch users via backend endpoint (service role)
-        const backendUrl = `https://workigom-backend.onrender.com/make-server-018e1998/admin/users`;
-        
-        const response = await fetch(backendUrl, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session.access_token}`,
-          },
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error('Backend error:', errorData);
-          
-          if (response.status === 401) {
-            setAuthError(true);
-            toast.error('❌ Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.');
-          } else if (response.status === 403) {
-            toast.error('❌ Admin yetkisi gerekli');
-          } else {
-            toast.error('❌ Kullanıcılar yüklenirken hata oluştu: ' + (errorData.error || 'Bilinmeyen hata'));
-          }
-          setLoadingUsers(false);
-          return;
-        }
-
-        const result = await response.json();
-        
-        if (result.success && result.users) {
-          setUsers(result.users as UserData[]);
-          console.log(`✅ ${result.users.length} kullanıcı yüklendi (backend)`);
-        }
-      } catch (error) {
-        console.error('Error fetching users:', error);
-        toast.error('❌ Kullanıcılar yüklenirken hata oluştu');
-      } finally {
-        setLoadingUsers(false);
-      }
-    };
-
     fetchUsers();
-  }, [user]);
+  }, []);
 
-  const handleRefreshUsers = async () => {
-    if (!isSupabaseConfigured()) return;
-    
+  const fetchUsers = () => {
     setLoadingUsers(true);
-    setAuthError(false);
     
     try {
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      // Get all users from localStorage
+      const allUsersStr = localStorage.getItem('workigom_all_users');
       
-      if (sessionError || !session) {
-        console.error('Session error:', sessionError);
-        setAuthError(true);
-        toast.error('❌ Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.');
-        setLoadingUsers(false);
-        return;
-      }
-
-      // Fetch users via backend endpoint (service role)
-      const backendUrl = `https://workigom-backend.onrender.com/make-server-018e1998/admin/users`;
-      
-      const response = await fetch(backendUrl, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Backend error:', errorData);
+      if (allUsersStr) {
+        const allUsers = JSON.parse(allUsersStr);
         
-        if (response.status === 401) {
-          setAuthError(true);
-          toast.error('❌ Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.');
-        } else if (response.status === 403) {
-          toast.error('❌ Admin yetkisi gerekli');
-        } else {
-          toast.error('❌ Kullanıcılar yüklenirken hata oluştu: ' + (errorData.error || 'Bilinmeyen hata'));
-        }
-        setLoadingUsers(false);
-        return;
-      }
-
-      const result = await response.json();
-      
-      if (result.success && result.users) {
-        setUsers(result.users as UserData[]);
-        toast.success(`✅ ${result.users.length} kullanıcı yenilendi`);
+        // Filter out admin users, only show individual and corporate
+        const filteredUsers = allUsers
+          .filter((u: any) => u.user_type !== 'admin')
+          .map((u: any) => ({
+            id: u.id,
+            email: u.email,
+            full_name: u.full_name,
+            user_type: u.user_type
+          }));
+        
+        setUsers(filteredUsers);
+        console.log(`✅ ${filteredUsers.length} kullanıcı yüklendi (localStorage)`);
+      } else {
+        console.log('⚠️ Henüz kullanıcı yok');
+        setUsers([]);
       }
     } catch (error) {
-      console.error('Error refreshing users:', error);
+      console.error('Error fetching users:', error);
       toast.error('❌ Kullanıcılar yüklenirken hata oluştu');
+      setUsers([]);
     } finally {
       setLoadingUsers(false);
     }
+  };
+
+  const handleRefreshUsers = () => {
+    fetchUsers();
+    toast.success('✅ Kullanıcılar yenilendi');
   };
 
   const handleSend = () => {
@@ -266,44 +176,17 @@ export function SendNotificationForm() {
           <h1 className="text-2xl lg:text-3xl font-semibold text-gray-900">Bildirim Gönder</h1>
           <p className="text-sm lg:text-base text-gray-600">Kullanıcılara toplu veya bireysel bildirim gönderin</p>
         </div>
-        {isSupabaseConfigured() && (
-          <Button
-            onClick={handleRefreshUsers}
-            disabled={loadingUsers}
-            variant="outline"
-            size="sm"
-            className="hidden sm:flex gap-2"
-          >
-            <RefreshCw className={`w-4 h-4 ${loadingUsers ? 'animate-spin' : ''}`} />
-            Yenile
-          </Button>
-        )}
+        <Button
+          onClick={handleRefreshUsers}
+          disabled={loadingUsers}
+          variant="outline"
+          size="sm"
+          className="hidden sm:flex gap-2"
+        >
+          <RefreshCw className={`w-4 h-4 ${loadingUsers ? 'animate-spin' : ''}`} />
+          Yenile
+        </Button>
       </div>
-
-      {/* Auth Error Alert */}
-      {authError && (
-        <div className="mb-6">
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-            <div className="flex gap-3">
-              <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <div className="flex-1">
-                <p className="font-medium text-red-900 mb-1">Oturum Süreniz Dolmuş</p>
-                <p className="text-sm text-red-800 mb-3">
-                  Kullanıcı listesini görüntülemek için lütfen tekrar giriş yapın.
-                </p>
-                <Button
-                  onClick={() => window.location.reload()}
-                  size="sm"
-                  variant="outline"
-                  className="border-red-300 text-red-700 hover:bg-red-50"
-                >
-                  Sayfayı Yenile ve Tekrar Giriş Yap
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       <Card className="p-4 lg:p-6 bg-white border-0 shadow-sm">
         <div className="space-y-6">
@@ -357,26 +240,18 @@ export function SendNotificationForm() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 {targetType === 'SINGLE_INDIVIDUAL' ? 'Kullanıcı Seçin' : 'Şirket Seçin'} <span className="text-red-500">*</span>
               </label>
-              <Select value={targetId} onValueChange={setTargetId} disabled={loadingUsers || authError}>
+              <Select value={targetId} onValueChange={setTargetId} disabled={loadingUsers}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder={
-                    authError
-                      ? 'Oturum süreniz dolmuş - Lütfen giriş yapın'
-                      : loadingUsers 
-                        ? 'Kullanıcılar yükleniyor...' 
-                        : targetType === 'SINGLE_INDIVIDUAL' 
-                          ? 'Kullanıcı seçin' 
-                          : 'Şirket seçin'
+                    loadingUsers 
+                      ? 'Kullanıcılar yükleniyor...' 
+                      : targetType === 'SINGLE_INDIVIDUAL' 
+                        ? 'Kullanıcı seçin' 
+                        : 'Şirket seçin'
                   } />
                 </SelectTrigger>
                 <SelectContent>
-                  {authError ? (
-                    <div className="p-4 text-sm text-center">
-                      <AlertTriangle className="w-8 h-8 text-red-500 mx-auto mb-2" />
-                      <p className="text-red-700 font-medium">Oturum Süreniz Dolmuş</p>
-                      <p className="text-red-600 text-xs mt-1">Lütfen sayfayı yenileyip tekrar giriş yapın</p>
-                    </div>
-                  ) : loadingUsers ? (
+                  {loadingUsers ? (
                     <div className="flex items-center justify-center p-4">
                       <Loader2 className="w-5 h-5 animate-spin text-gray-400" />
                       <span className="ml-2 text-sm text-gray-500">Yükleniyor...</span>
@@ -408,20 +283,7 @@ export function SendNotificationForm() {
                   )}
                 </SelectContent>
               </Select>
-              {authError ? (
-                <div className="flex items-center gap-2 mt-2">
-                  <p className="text-xs text-red-600">⚠️ Kullanıcı listesi yüklenemedi - Oturum süreniz dolmuş</p>
-                  <Button
-                    onClick={handleRefreshUsers}
-                    size="sm"
-                    variant="ghost"
-                    className="text-xs h-6 px-2"
-                  >
-                    <RefreshCw className="w-3 h-3 mr-1" />
-                    Tekrar Dene
-                  </Button>
-                </div>
-              ) : !loadingUsers && users.length > 0 ? (
+              {!loadingUsers && users.length > 0 ? (
                 <p className="text-xs text-gray-500 mt-1">
                   {users.filter((u: UserData) => 
                     targetType === 'SINGLE_INDIVIDUAL' 

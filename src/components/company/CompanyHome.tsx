@@ -99,11 +99,11 @@ export function CompanyHome({ onNavigate }: CompanyHomeProps) {
 
       <div className="max-w-4xl mx-auto px-4 lg:px-6 -mt-3 space-y-3">
         {/* CTA Card */}
-        <Card className="bg-gradient-to-br from-[#0367A6] to-[#012840] text-white p-4 border-0 shadow-md overflow-hidden relative">
+        <Card className="bg-gradient-to-br from-[#4DD0E1] to-[#FF80AB] text-white p-4 border-0 shadow-[0_4px_12px_rgba(0,0,0,0.1)] overflow-hidden relative rounded-2xl hover:scale-[1.02] transition-all">
           <div className="relative z-10">
             <div className="flex items-center justify-between gap-3 mb-2">
-              <h4 className="text-white text-sm">Acil Personel mi Lazım?</h4>
-              <Zap className="w-6 h-6 text-amber-400 flex-shrink-0" />
+              <h4 className="text-white text-sm font-semibold">Günlük personel ihtiyacınız mı var?</h4>
+              <Zap className="w-6 h-6 text-[#FFF176] flex-shrink-0" />
             </div>
             <p className="text-white/90 mb-3 text-xs leading-relaxed">
               Yakındaki çalışanlar anında bildirim alsın
@@ -111,7 +111,7 @@ export function CompanyHome({ onNavigate }: CompanyHomeProps) {
             <Button
               onClick={() => onNavigate('post-job')}
               size="sm"
-              className="bg-white text-[#0367A6] hover:bg-white/90 w-full h-8 text-xs"
+              className="bg-white text-[#4DD0E1] hover:bg-white/90 hover:scale-105 w-full h-8 text-xs rounded-xl font-medium shadow-md"
             >
               <Zap className="w-3 h-3 mr-1.5" />
               İş Talebi Oluştur
@@ -122,17 +122,17 @@ export function CompanyHome({ onNavigate }: CompanyHomeProps) {
 
         {/* Job Applications Card */}
         <Card 
-          className="p-3 border-0 shadow-sm bg-gradient-to-r from-blue-50 to-indigo-50 cursor-pointer hover:shadow-md transition-all"
+          className="p-3 border-0 shadow-[0_4px_12px_rgba(0,0,0,0.08)] bg-gradient-to-r from-[#B39DDB]/10 to-[#FFF176]/10 cursor-pointer hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] transition-all rounded-2xl hover:scale-[1.02]"
           onClick={() => onNavigate('job-applications')}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#012840] to-[#0367A6] flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4DD0E1] to-[#FF80AB] flex items-center justify-center flex-shrink-0 shadow-md">
                 <CheckCircle className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h4 className="text-[#012840] text-sm mb-0">İş Başvuruları</h4>
-                <p className="text-[#0367A6] text-xs">
+                <h4 className="text-[#333333] text-sm mb-0 font-semibold">İş Başvuruları</h4>
+                <p className="text-[#757575] text-xs">
                   {(() => {
                     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
                     const allApplications = JSON.parse(localStorage.getItem('jobApplications') || '[]');
@@ -142,14 +142,14 @@ export function CompanyHome({ onNavigate }: CompanyHomeProps) {
                 </p>
               </div>
             </div>
-            <Badge className="bg-[#0367A6] text-white text-xs">Görüntüle →</Badge>
+            <Badge className="bg-[#4DD0E1] text-white text-xs rounded-full">Görüntüle →</Badge>
           </div>
         </Card>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-2.5">
           <Card 
-            className="p-3 border-0 shadow-sm bg-white cursor-pointer hover:shadow-md transition-shadow"
+            className="p-3 border-0 shadow-[0_4px_12px_rgba(0,0,0,0.08)] bg-[#FFF9E6] cursor-pointer hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] transition-all rounded-2xl hover:scale-[1.02]"
             onClick={() => onNavigate('gelen-personeller')}
           >
             <div className="flex items-center gap-2 mb-2">
@@ -182,7 +182,7 @@ export function CompanyHome({ onNavigate }: CompanyHomeProps) {
             <div className="text-xs text-[#0367A6]">Gelen Personel</div>
           </Card>
 
-          <Card className="p-3 border-0 shadow-sm bg-white hover:shadow-md transition-shadow">
+          <Card className="p-3 border-0 shadow-[0_4px_12px_rgba(0,0,0,0.08)] bg-[#FFF9E6] hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] transition-shadow rounded-2xl hover:scale-[1.02]">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center">
                 <DollarSign className="w-4 h-4 text-red-600" />
@@ -193,7 +193,7 @@ export function CompanyHome({ onNavigate }: CompanyHomeProps) {
             <div className="text-xs text-[#0367A6]">Giden Ödeme</div>
           </Card>
 
-          <Card className="p-3 border-0 shadow-sm bg-white hover:shadow-md transition-shadow">
+          <Card className="p-3 border-0 shadow-[0_4px_12px_rgba(0,0,0,0.08)] bg-[#FFF9E6] hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] transition-shadow rounded-2xl hover:scale-[1.02]">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center">
                 <CreditCard className="w-4 h-4 text-orange-600" />
@@ -204,7 +204,7 @@ export function CompanyHome({ onNavigate }: CompanyHomeProps) {
             <div className="text-xs text-[#0367A6]">Kalan Bakiye Tutarı</div>
           </Card>
 
-          <Card className="p-3 border-0 shadow-sm bg-white hover:shadow-md transition-shadow">
+          <Card className="p-3 border-0 shadow-[0_4px_12px_rgba(0,0,0,0.08)] bg-[#FFF9E6] hover:shadow-[0_6px_16px_rgba(0,0,0,0.12)] transition-shadow rounded-2xl hover:scale-[1.02]">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
                 <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
