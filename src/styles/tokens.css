@@ -80,11 +80,16 @@
      BORDER RADIUS
      ======================================== */
 
+  --radius-xs: .125rem;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 20px;
   --radius-xl: 20px;
   --radius-full: 9999px;
+
+  /* Card / component tokens — aynı radius grubunun içinde tutun */
+  --card-radius: var(--radius-md); /* kartlar için ortak radius (ör. 12px) */
+  --hero-radius-bottom: 0 0 var(--radius-lg) var(--radius-lg); /* hero için sadece alt köşeler */
 
   /* ========================================
      SHADOWS / ELEVATION
