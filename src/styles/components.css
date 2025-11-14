@@ -6,6 +6,178 @@
  * Component-specific styles using design tokens
  */
 
+@import './tokens.css';
+
+/* Global utility base */
+body {
+  font-family: var(--font-family-base);
+  color: var(--text-strong);
+  background: var(--color-bg);
+  margin: 0;
+}
+
+/* Typography helpers */
+.text-page-title {
+  font-size: var(--font-size-page-title);
+  line-height: var(--line-height-page-title);
+  font-weight: var(--font-semibold);
+  color: var(--text-strong);
+}
+
+.text-section-title {
+  font-size: var(--font-size-section-title);
+  line-height: var(--line-height-section-title);
+  font-weight: var(--font-semibold);
+  color: var(--text-strong);
+}
+
+.text-card-title {
+  font-size: var(--font-size-card-title);
+  line-height: var(--line-height-card-title);
+  font-weight: var(--font-semibold);
+  color: var(--text-strong);
+}
+
+.text-body14 {
+  font-size: var(--font-size-body14);
+  line-height: var(--line-height-body14);
+  font-weight: var(--font-regular);
+  color: var(--text-strong);
+}
+
+.text-small12 {
+  font-size: var(--font-size-small12);
+  line-height: var(--line-height-small12);
+  font-weight: var(--font-regular);
+  color: var(--text-muted);
+}
+
+.text-sidebar-item {
+  font-size: var(--font-size-body14);
+  line-height: var(--line-height-body14);
+  font-weight: var(--font-medium);
+  color: var(--text-strong);
+}
+
+/* Header Card (banner) */
+.header-card {
+  padding: 18px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(90deg, var(--color-turquoise), var(--color-turquoise-dark));
+  box-shadow: var(--shadow-2);
+  color: var(--color-surface);
+  overflow: hidden;
+}
+
+/* Metric / stat card */
+.metric-card {
+  padding: 18px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-1);
+  min-height: var(--card-min-height);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Job card */
+.job-card {
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Empty state */
+.empty-state {
+  padding: 24px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-1);
+  border: 1px dashed rgba(107,114,128,0.06);
+  text-align: center;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: var(--color-cream);
+  padding: 24px 16px;
+}
+.sidebar .item {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:8px 12px;
+  border-radius: 10px;
+}
+.sidebar .item.active {
+  background: linear-gradient(90deg, var(--color-turquoise), var(--color-lavender));
+  color: white;
+  border-radius: var(--radius-lg);
+}
+
+/* Badge */
+.badge {
+  display:inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--color-pink);
+  color: white;
+  font-size: 12px;
+}
+
+/* Chat layout / composer */
+.chat-left { width: 320px; }
+.chat-window {
+  display:flex;
+  flex-direction:column;
+  height: 100%;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-1);
+}
+.chat-messages { flex: 1; padding: 16px; overflow:auto; }
+.chat-bubble { padding:10px 14px; border-radius: 14px; max-width:72%; margin-bottom:8px; }
+.chat-bubble.incoming { background: var(--color-surface); color: var(--text-strong); }
+.chat-bubble.outgoing { background: var(--color-turquoise-dark); color: white; align-self: flex-end; }
+
+/* Composer */
+.composer {
+  display:flex;
+  gap:8px;
+  padding:12px;
+  border-top: 1px solid rgba(11,18,30,0.04);
+  align-items:center;
+}
+.composer input {
+  flex:1;
+  padding:10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(11,18,30,0.06);
+  font-size: var(--font-size-body14);
+}
+.composer button {
+  background: var(--color-turquoise);
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+/* Composer disabled state */
+.composer.disabled input {
+  background: var(--color-lavender-overlay);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+.composer.disabled button { opacity: 0.48; pointer-events: none; }
+
 /* ========================================
    HEADER CARD
    ======================================== */
@@ -547,4 +719,50 @@
 .btn--outline:hover {
   background: var(--color-turquoise);
   color: var(--text-white);
+}
+
+/* ========================================
+   TEXT STYLE UTILITIES (Figma-aligned)
+   ======================================== */
+
+.text-page-title {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-semibold);
+  line-height: 28px;
+  font-family: var(--font-primary);
+}
+
+.text-section-title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  line-height: 24px;
+  font-family: var(--font-primary);
+}
+
+.text-card-title {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  line-height: 20px;
+  font-family: var(--font-primary);
+}
+
+.text-body14 {
+  font-size: var(--text-sm);
+  font-weight: var(--font-regular);
+  line-height: 20px;
+  font-family: var(--font-primary);
+}
+
+.text-small12 {
+  font-size: var(--text-xs);
+  font-weight: var(--font-regular);
+  line-height: 16px;
+  font-family: var(--font-primary);
+}
+
+.text-sidebar-item {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  line-height: 20px;
+  font-family: var(--font-primary);
 }
