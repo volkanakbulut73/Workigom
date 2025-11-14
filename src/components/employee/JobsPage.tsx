@@ -101,7 +101,7 @@ export function JobsPage({ onNavigate }: JobsPageProps) {
   return (
     <div className="pb-20">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#0367A6] to-[#012840] text-white p-6">
+      <div className="bg-gradient-to-br from-[#012840] to-[#0367A6] text-white p-6 rounded-b-3xl">
         <h1 className="mb-1">İşlerim</h1>
         <p className="text-[#C9E2F2]">Başvurularınızı ve kazançlarınızı takip edin</p>
       </div>

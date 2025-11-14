@@ -42,22 +42,19 @@ export function UrgentJobsPage({ onNavigate }: UrgentJobsPageProps) {
   return (
     <div className="pb-20 lg:pb-6 bg-gradient-to-b from-[#C9E2F2]/30 to-white min-h-screen">
       {/* Header */}
-      <div className="bg-white/80 backdrop-blur-lg border-b border-border sticky top-0 z-10 shadow-sm">
-        <div className="p-4 lg:p-6 flex items-center gap-3 max-w-7xl mx-auto">
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={() => onNavigate('home')}
-            className="lg:hidden"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-          <h2 className="flex-1">Acil İşler</h2>
-          <Badge className="bg-gradient-to-r from-[#0367A6] to-[#012840] border-0">{filteredJobs.length}</Badge>
+      <div className="bg-gradient-to-br from-[#012840] to-[#0367A6] text-white p-4 lg:p-6 rounded-b-3xl">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-white mb-1">Acil İşler</h2>
+          <div className="flex items-center gap-2">
+            <p className="text-white/80 text-sm">{filteredJobs.length} iş bulundu</p>
+            <Badge className="bg-white/20 text-white border-0">{filteredJobs.length}</Badge>
+          </div>
         </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-4">
         {/* Search and Filter */}
-        <div className="px-4 pb-4 space-y-3">
+        <div className="mt-4 space-y-3 mb-6">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input

@@ -113,7 +113,7 @@ export function JobListingsPage({ onNavigate }: JobListingsPageProps) {
   if (jobListings.length === 0) {
     return (
       <div className="min-h-screen bg-white pb-20 lg:pb-6">
-        <div className="bg-gradient-to-br from-[#012840] to-[#0367A6] text-white px-4 lg:px-6 pt-6 pb-8">
+        <div className="bg-gradient-to-br from-[#012840] to-[#0367A6] text-white px-4 lg:px-6 pt-6 pb-8 rounded-b-3xl">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-white">İş İlanları</h1>
           </div>
@@ -135,7 +135,7 @@ export function JobListingsPage({ onNavigate }: JobListingsPageProps) {
   return (
     <div className="min-h-screen bg-white pb-20 lg:pb-6">
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#012840] to-[#0367A6] text-white px-4 lg:px-6 pt-6 pb-8">
+      <div className="bg-gradient-to-br from-[#012840] to-[#0367A6] text-white px-4 lg:px-6 pt-6 pb-8 rounded-b-3xl">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-white mb-2">İş İlanları</h1>
           <p className="text-white/90 text-sm">
