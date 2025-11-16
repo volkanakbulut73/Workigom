@@ -273,7 +273,7 @@ export function ProfilePage({ onNavigate }: ProfilePageProps) {
   return (
     <div className="pb-20 lg:pb-6 bg-white min-h-screen">
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#012840] to-[#0367A6] px-4 lg:px-6 pt-6 pb-8 lg:pb-10 rounded-b-3xl">
+      <div className="bg-gradient-to-br from-[#012840] to-[#0367A6] px-4 lg:px-6 pt-8 pb-10 rounded-b-[32px] shadow-lg">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-white">Profil</h1>

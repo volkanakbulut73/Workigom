@@ -86,6 +86,11 @@
   --radius-xl: 20px;
   --radius-full: 9999px;
 
+  /* Semantic/component radii */
+  --card-radius: var(--radius-md); /* ortak kart radius'u */
+  --hero-radius-bottom: 0 0 var(--radius-lg) var(--radius-lg); /* hero/banner için sadece alt köşeler */
+  --card-foreground: var(--text-strong);
+
   /* ========================================
      SHADOWS / ELEVATION
      ======================================== */

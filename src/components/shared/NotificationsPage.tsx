@@ -224,7 +224,7 @@ export function NotificationsPage({ role, onNavigate }: NotificationsPageProps) 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#C9E2F2]/30 to-white pb-20 lg:pb-6">
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#012840] to-[#0367A6] text-white p-4 lg:p-6 rounded-b-3xl">
+      <div className="bg-gradient-to-br from-[#012840] to-[#0367A6] text-white px-4 lg:px-6 pt-8 pb-10 rounded-b-[32px] shadow-lg">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-3 mb-2">
             <Bell className="w-6 h-6" />

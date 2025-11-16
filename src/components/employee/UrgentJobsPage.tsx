@@ -42,7 +42,7 @@ export function UrgentJobsPage({ onNavigate }: UrgentJobsPageProps) {
   return (
     <div className="pb-20 lg:pb-6 bg-gradient-to-b from-[#C9E2F2]/30 to-white min-h-screen">
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#012840] to-[#0367A6] text-white p-4 lg:p-6 rounded-b-3xl">
+      <div className="bg-gradient-to-br from-[#012840] to-[#0367A6] text-white px-4 lg:px-6 pt-8 pb-10 rounded-b-[32px] shadow-lg">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-white mb-1">Acil İşler</h2>
           <div className="flex items-center gap-2">
